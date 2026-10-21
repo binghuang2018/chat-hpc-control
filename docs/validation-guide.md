@@ -54,6 +54,10 @@ rebuilds a wheel from sdist and imports it in a fresh environment. Release evide
 requires actual command/environment/version/log/result metadata; review its semantic
 summary. A successful build alone is not functional or scientific acceptance.
 
+Each evidence name is write-once. Choose a new name for every rerun. Interrupted
+or source-changing runs retain their log without a PASS record. PASS records bind
+the log SHA-256 at capture, and the manifest rejects changed logs.
+
 Captured local logs can contain temporary developer/test paths. Keep them private;
 distributed wheels/sdist must not contain those logs, runtime files or credentials.
 Do not commit a private evidence directory. The tracked acceptance report summarizes

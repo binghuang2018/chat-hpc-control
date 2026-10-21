@@ -1,6 +1,6 @@
 # v0.1 implementation progress
 
-The approved Native implementation is active. This is not a release acceptance report.
+The approved Native implementation is complete as a local candidate. The final acceptance scope and gaps are recorded in [v0.1 acceptance](v0.1-acceptance.md).
 
 | Stage | State | Current evidence |
 |---|---|---|
@@ -8,7 +8,7 @@ The approved Native implementation is active. This is not a release acceptance r
 | B1–B5 compute/plugins/results | Complete | Isolated plugins, real Linux local/Task Spooler workers, synthetic QC profiles, immutable collections |
 | C1–C5 integrations | Complete at offline/SDK level | GitHub/MCP/three clients/publication; no real external API operations |
 | D1–D2 compatibility/docs | Complete | Read-only legacy identity and clean wheel/demo installation |
-| D3 release | In final verification | Python matrix, package rebuild, independent review and local candidate artifacts |
+| D3 release | Complete locally | Matrix, package rebuild/privacy, independent review, wheel/sdist/demo wheel and hash-bound evidence |
 
 Existing compute deployments remain untouched. Linux checks use a new local VM with no host-directory mounts. All source implementation so far is newly written from the approved contracts; no private source/history/results copied.
 
@@ -73,3 +73,9 @@ Evidence: **5 legacy tests passed**, read-only permissions plus before/after has
 English/Chinese quickstarts, plugin/site/results guides, compatibility matrix, native input examples and an uninstalled systemd template are present. The public `demo` CLI provisions only a new owned synthetic site and refuses foreign resume configuration. Test discovery is limited to tests; a frozen-input tripwire is not imported. Historical design-only status was reconciled with current evidence.
 
 Evidence: docs/guard tests **4 passed**; minimal-core host full suite **222 passed, 24 skips**; Linux docs plus fresh wheel/demo installation in empty HOME **5 passed** (37.06 s). Demo resume retains run and collection IDs. The systemd template remains uninstalled/unverified; no commercial native job or paid API call was run.
+
+## D3 — local release candidate
+
+Final macOS Python 3.11/3.12/3.13 core suites: **244 passed, 30 explicit skips** each; complete SDK suite: **251 passed, 23 Linux-only skips**. Linux pre-review full matrix: **255 passed, 7 optional skips** each; after core repairs Python 3.13 full **263 passed, 7 skips**, and Python 3.11/3.12 selected final regressions **50 passed** each. Final packaging/evidence suite **9 passed** on each Linux Python version. These phases are reported separately.
+
+An independent reviewer confirmed repair of five core issues plus a validation-evidence overwrite issue. Further package audit repaired unanchored sdist inclusion and metadata-version compatibility. Core/demo wheel, sdist, clean installation/resume, strict metadata and archive contents were checked. All raw evidence stays outside distributed packages. No actual API, commercial QC, external publication or production migration is claimed.
