@@ -1,4 +1,4 @@
-import importlib.util,json,subprocess,sys,tarfile,zipfile
+import importlib.util,json,subprocess,sys,tarfile,tempfile,zipfile
 from pathlib import Path
 import pytest
 ROOT=Path(__file__).resolve().parents[2]
@@ -28,7 +28,10 @@ def test_ci_no_live_default():
 @pytest.fixture(scope='module')
 def distributions(tmp_path_factory):
     directory=tmp_path_factory.mktemp('release-packages')
-    subprocess.run([sys.executable,'-m','build','--no-isolation','--outdir',str(directory),str(ROOT)],check=True,capture_output=True,text=True)
+    private=ROOT/'.superpowers';private.mkdir(exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix='sdist-privacy-',dir=private) as probe:
+        (Path(probe)/'README-PRIVATE').write_text('synthetic ignored-file tripwire; must never be distributed')
+        subprocess.run([sys.executable,'-m','build','--no-isolation','--outdir',str(directory),str(ROOT)],check=True,capture_output=True,text=True)
     return directory
 
 
