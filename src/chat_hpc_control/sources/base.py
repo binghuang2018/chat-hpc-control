@@ -52,8 +52,9 @@ class SourceResolver:
             repository = task.source["repository"]
             if repository not in site.repositories:
                 raise ControlError("SOURCE_NOT_ALLOWED", "repository is not approved")
-            reader = self.git_reader or GitCliReader(
-                site.repositories, max_bytes=site.limits.get("max_input_bytes", 64 * 1024 * 1024))
+            from .staged_git import StagedGitReader
+            reader = self.git_reader or StagedGitReader(site, GitCliReader(
+                site.repositories, max_bytes=site.limits.get("max_input_bytes", 64 * 1024 * 1024)))
             commit = reader.resolve_ref(repository, task.source["ref"])
             names = checked_paths(task.source["files"])
             data, blobs = {}, {}

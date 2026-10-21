@@ -1,0 +1,21 @@
+name: Chat HPC Control
+description: Authenticated Issue requests to a separately installed native broker
+inputs:
+  python:
+    description: Absolute path to an administrator-installed Python with chat-hpc-control 0.1.0 and github extra
+    required: true
+  site-config:
+    description: Absolute private gateway TOML path on the trusted runner
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Dispatch frozen Issue intent
+      shell: bash
+      env:
+        CHC_PYTHON: ${{ inputs.python }}
+        CHC_SITE_CONFIG: ${{ inputs.site-config }}
+        CHC_ACTION_ROOT: ${{ github.action_path }}
+      run: |
+        "$CHC_PYTHON" -I -c 'from importlib.metadata import version; assert version("chat-hpc-control") == "0.1.0", "install the pinned local/released wheel first"'
+        "$CHC_PYTHON" -I "$CHC_ACTION_ROOT/action/entrypoint.py"

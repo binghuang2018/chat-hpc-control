@@ -30,3 +30,9 @@ Evidence: macOS full suite **129 passed, 15 Linux-only skipped**; isolated Linux
 The broker writer reconciles independently of API reads, recovers reservations, observes native terminal receipts and copies bounded regular outputs to immutable snapshots. Collections bind parser/assessment code, declared contract and raw evidence. Cursor HMACs bind run, collection, fields and offset; newer indexes do not redirect old pages. Unsupported/missing evidence, invalid values and missing quantities remain distinct. Terminal execution is not downgraded by later collection failures.
 
 Evidence: macOS full suite **149 passed, 17 Linux-only skipped**; isolated Linux full suite **166 passed** (312.40 s), including native collect/read and output-symlink rejection. No scientific acceptance was performed.
+
+## C1 — authenticated GitHub gateway
+
+Trusted Actions events are bound to a fetched Issue, fixed repository ID and allowlisted stable author/actor IDs. The gateway persists validate output and an Issue intent before submission. Edited frozen Issues conflict, retries retain one intent, and fixed Git tree/blob evidence is staged in a credential-free cache. The composite Action checks an administrator-installed pinned version; it does not install or execute task code.
+
+Evidence: macOS complete suite **161 passed, 17 Linux-only skipped**; isolated Linux GitHub/source/Action tests **23 passed**. GitHub API traffic was simulated; no real repository, Issue, run or publication was created.

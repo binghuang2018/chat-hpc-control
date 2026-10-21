@@ -16,6 +16,7 @@ def _parser():
     parser.add_argument("--site", type=Path, help="explicit private site TOML")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("capabilities")
+    commands.add_parser("github-event").add_argument("--event", type=Path, required=True)
     validate = commands.add_parser("validate")
     validate.add_argument("--task", type=Path, required=True)
     validate.add_argument("--schema-only", action="store_true")
@@ -52,6 +53,11 @@ def main(argv: list[str] | None = None) -> int:
                 raise ControlError("SCHEMA_INVALID", "--site is required outside schema-only validation")
             from .core.config import load_site
             site = load_site(args.site)
+            if args.command == "github-event":
+                from .transports.github import dispatch_event
+                response = dispatch_event(args.event, args.site)
+                print(encode_response(response).decode())
+                return 0 if response.ok else 2
             if args.command == "broker":
                 if sys.platform != "linux":
                     raise ControlError("CAPABILITY_UNSUPPORTED", "native broker execution requires Linux")

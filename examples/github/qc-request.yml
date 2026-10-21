@@ -1,0 +1,23 @@
+# Illustrative template: replace commit, labels and paths before enabling.
+name: QC Issue gateway
+on:
+  issues:
+    types: [opened, edited, labeled, reopened]
+permissions:
+  contents: read
+  issues: read
+concurrency:
+  group: qc-issue-${{ github.event.issue.number }}
+  cancel-in-progress: false
+jobs:
+  request:
+    if: contains(github.event.issue.labels.*.name, 'qc-request')
+    runs-on: [self-hosted, example-trusted-control-gateway]
+    steps:
+      # No checkout and no pull_request_target. Install/audit the action separately.
+      - uses: example-community/chat-hpc-control@REPLACE_WITH_REVIEWED_40_HEX_COMMIT
+        with:
+          python: /example/gateway/venv/bin/python
+          site-config: /example/private/site.toml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
