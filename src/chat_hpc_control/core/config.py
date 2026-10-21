@@ -78,5 +78,11 @@ def load_site(path: Path) -> SiteConfig:
     for key in ("max_cpus", "max_memory_mib"):
         if type(config.options.get(key)) is not int or config.options[key] <= 0:
             _invalid("executor requires positive resource capacities")
+    concurrency = config.options.get("max_concurrent", 1)
+    if type(concurrency) is not int or not 1 <= concurrency <= 64:
+        _invalid("executor concurrency must be an integer from 1 to 64")
+    maximum_walltime = config.options.get("max_walltime_seconds")
+    if maximum_walltime is not None and (type(maximum_walltime) is not int or maximum_walltime <= 0):
+        _invalid("optional site walltime cap must be a positive integer")
     return SiteConfig(obj["site_id"], root, principals, runtimes, config, obj["repositories"],
                       obj["limits"], obj["policy_revision"], tuple(obj["gateway_uids"]), local, obj["settings"])

@@ -119,3 +119,16 @@ def test_run_ownership_is_not_a_guess(setup_broker):
     from dataclasses import replace
     with pytest.raises(ControlError, match="AUTH_DENIED"):
         broker.get_status(one.run_id, replace(ctx, principal="bob"))
+
+
+def test_unapproved_executable_never_reaches_executor(setup_broker, monkeypatch):
+    broker, task, ctx, store, engine, executor = setup_broker
+    from dataclasses import replace
+    original = engine.prepare
+    def wrong_program(frozen, context):
+        return replace(original(frozen, context), argv=("/bin/sh", "-c", "echo unapproved"))
+    monkeypatch.setattr(engine, "prepare", wrong_program)
+    req = request(broker, task, ctx)
+    with pytest.raises(ControlError, match="SCHEMA_INVALID"):
+        broker.submit(req, ctx)
+    assert executor.submissions == []

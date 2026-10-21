@@ -13,6 +13,9 @@ dependencies = ["jsonschema>=4.26.0,<5"]
 [project.scripts]
 chat-hpc-control = "chat_hpc_control.cli:main"
 
+[project.entry-points."chat_hpc_control.executors"]
+local = "chat_hpc_control.executors.local:LocalExecutor"
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/chat_hpc_control"]
 

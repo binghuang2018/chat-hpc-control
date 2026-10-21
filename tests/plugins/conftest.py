@@ -77,7 +77,9 @@ site = SiteConfig("example-site", Path(RUNTIME_ROOT), {}, {
  "inspect":"chat-hpc-test-engine", "incompatible":"chat-hpc-test-engine"}})
 '''
         prelude = "RUNTIME_ROOT=" + repr(str(temp / "runtime")) + "\n" + prelude
-        actual_env = os.environ.copy()
+        client_home = temp / "client-home"
+        client_home.mkdir(mode=0o700, exist_ok=True)
+        actual_env = {"PATH": os.environ.get("PATH", os.defpath), "HOME": str(client_home), "LANG": "C.UTF-8"}
         if extra_env:
             actual_env.update(extra_env)
         result = subprocess.run([str(env / "bin/python"), "-c", prelude + "\n" + script],

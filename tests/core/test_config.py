@@ -79,3 +79,12 @@ def test_runtime_cannot_carry_model_credentials(tmp_path):
         "[executor]", '[engines.pyscf.environment]\nOPENAI_API_KEY = "synthetic-not-a-key"\n[executor]'))
     with pytest.raises(ControlError, match="SCHEMA_INVALID"):
         api().load_site(path)
+
+
+@pytest.mark.parametrize("value", ["0", "-1", "true"])
+def test_invalid_queue_concurrency_rejected(tmp_path, value):
+    path = tmp_path / "site.toml"
+    path.write_text(config_text(tmp_path / "runtime").replace(
+        "max_cpus = 2", "max_cpus = 2\nmax_concurrent = " + value))
+    with pytest.raises(ControlError, match="SCHEMA_INVALID"):
+        api().load_site(path)

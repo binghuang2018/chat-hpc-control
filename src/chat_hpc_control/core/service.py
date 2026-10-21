@@ -130,5 +130,24 @@ class ToolService:
 
 
 def build_service(site):
-    """Runtime assembly is provided by the engine/executor integration stage."""
-    raise ControlError("CAPABILITY_UNSUPPORTED", "native runtime assembly is not installed")
+    """Assemble only operator-enabled installed engines and an explicit executor."""
+    from .broker import Broker
+    from .store import StateStore
+    from ..sources.base import SourceResolver
+    from ..plugins.discovery import discover_enabled
+    from ..plugins.host import EngineProxy, PluginHost
+    from ..executors.local import LocalExecutor
+    if site.executor.kind != "local":
+        raise ControlError("CAPABILITY_UNSUPPORTED", "requested executor is not installed")
+    executor = LocalExecutor(site)
+    store = StateStore.open(site.root)
+    try:
+        descriptors = discover_enabled(site)
+        if set(site.engines) - descriptors.keys():
+            raise ControlError("CAPABILITY_UNSUPPORTED", "configured engine distribution is not installed")
+        host = PluginHost(site)
+        engines = {name: EngineProxy(host, name) for name in descriptors}
+        return ToolService(Broker(site, store, SourceResolver(), engines, executor))
+    except Exception:
+        store.close()
+        raise

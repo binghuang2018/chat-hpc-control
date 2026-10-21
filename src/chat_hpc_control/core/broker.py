@@ -2,6 +2,7 @@
 
 from dataclasses import asdict
 import hashlib
+from pathlib import Path
 import re
 import threading
 
@@ -91,7 +92,13 @@ class Broker:
             try:
                 plan = self.engines[request.task.engine_id].prepare(
                     frozen, PrepareContext(self.site, run_root, self.site.engines[request.task.engine_id]))
+                runtime = self.site.engines[request.task.engine_id]
+                trusted_executables = {Path(runtime.executable).resolve()}
+                if runtime.mpi_argv and Path(runtime.mpi_argv[0]).is_absolute():
+                    trusted_executables.add(Path(runtime.mpi_argv[0]).resolve())
                 if (not plan.argv or not all(isinstance(a, str) and "\x00" not in a for a in plan.argv)
+                        or not Path(plan.argv[0]).is_absolute()
+                        or Path(plan.argv[0]).resolve() not in trusted_executables
                         or not plan.cwd.resolve().is_relative_to(run_root.resolve())
                         or plan.resources != request.task.resources):
                     raise ControlError("SCHEMA_INVALID", "unapproved execution plan")
