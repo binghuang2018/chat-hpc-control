@@ -1,0 +1,32 @@
+{
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "chat-hpc-control/plugin-rpc/v1"
+    },
+    "engine_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "method": {
+      "enum": [
+        "info",
+        "probe",
+        "validate",
+        "prepare",
+        "parse"
+      ]
+    },
+    "request": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema",
+    "engine_id",
+    "method",
+    "request"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

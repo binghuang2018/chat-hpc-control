@@ -1,0 +1,94 @@
+{
+  "type": "object",
+  "properties": {
+    "site_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"
+    },
+    "root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "principals": {
+      "type": "object"
+    },
+    "engines": {
+      "type": "object"
+    },
+    "executor": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "local",
+            "task-spooler"
+          ]
+        },
+        "identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "options": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "kind",
+        "identity",
+        "options"
+      ],
+      "additionalProperties": false
+    },
+    "repositories": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "maximum": 9007199254740991,
+        "minimum": 1
+      }
+    },
+    "gateway_uids": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "maximum": 9007199254740991,
+        "minimum": 0
+      },
+      "uniqueItems": true
+    },
+    "local_principals": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "settings": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "site_id",
+    "root",
+    "policy_revision",
+    "principals",
+    "engines",
+    "executor",
+    "repositories",
+    "limits",
+    "gateway_uids",
+    "local_principals",
+    "settings"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

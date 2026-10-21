@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling>=1.32.4,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "chat-hpc-control"
+version = "0.1.0"
+description = "Provider-neutral, reproducible control of native QC calculations"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+dependencies = ["jsonschema>=4.26.0,<5"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/chat_hpc_control"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra"
+markers = [
+  "linux: requires a Linux execution host",
+  "task_spooler: requires a private Task Spooler instance",
+  "qc_live: explicitly authorized native QC execution",
+  "provider_live: explicitly authorized real model API",
+  "github_live: explicitly authorized external GitHub integration",
+]

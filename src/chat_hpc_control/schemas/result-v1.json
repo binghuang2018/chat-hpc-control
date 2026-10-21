@@ -1,0 +1,72 @@
+{
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "chat-hpc-control/result/v1"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "collection_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "execution_state": {
+      "enum": [
+        "RESERVED",
+        "SUBMISSION_UNKNOWN",
+        "QUEUED",
+        "RUNNING",
+        "COMPLETED",
+        "FAILED",
+        "CANCELLED",
+        "UNKNOWN"
+      ]
+    },
+    "integrity": {
+      "enum": [
+        "VERIFIED",
+        "FAILED",
+        "UNVERIFIED"
+      ]
+    },
+    "completeness": {
+      "enum": [
+        "COMPLETE",
+        "INCOMPLETE",
+        "INVALID",
+        "UNVERIFIED"
+      ]
+    },
+    "scientific_acceptance": {
+      "enum": [
+        "NOT_EVALUATED",
+        "PASS",
+        "FAIL"
+      ]
+    },
+    "data_ready": {
+      "type": "boolean"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "required": [
+    "schema",
+    "run_id",
+    "collection_id",
+    "execution_state",
+    "integrity",
+    "completeness",
+    "scientific_acceptance",
+    "data_ready",
+    "records"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}
