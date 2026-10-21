@@ -40,13 +40,15 @@ def test_wheel_contents(distributions):
         assert all(not any(part in n.split('/') for part in ('.git','runtime','.superpowers','tests')) for n in names)
         for n in names:
             raw=archive.read(n)
-            assert b'/Users/' not in raw and b'/home/'+b'ghrunner' not in raw
+            assert b'/'+b'Users/' not in raw and b'/home/'+b'ghrunner' not in raw
 
 
 def test_sdist_rebuild(distributions,tmp_path):
     with tarfile.open(next(distributions.glob('*.tar.gz'))) as archive:
         # Test only our just-built archive; all paths still require one top root.
         names=archive.getnames();assert all(not n.startswith('/') and '..' not in n.split('/') for n in names)
+        allowed={'src','tests','examples','docs','tools','scripts','constraints','.github','action.yml','pyproject.toml','README.md','README.zh-CN.md','LICENSE','CHANGELOG.md','CONTRIBUTING.md','SECURITY.md','PKG-INFO','.gitignore'}
+        assert all(n.split('/')[1] in allowed for n in names), 'sdist contains undeclared development/private files'
         archive.extractall(tmp_path,filter='data')
     project=next(p for p in tmp_path.iterdir() if p.is_dir())
     out=tmp_path/'rebuilt'
