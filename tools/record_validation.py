@@ -21,8 +21,10 @@ def main():
     if not re.fullmatch(r'[A-Za-z0-9_.-]+',args.name):parser.error('unsafe name')
     args.evidence.mkdir(parents=True,exist_ok=True)
     log=args.evidence/(args.name+'.log')
+    record_path=args.evidence/(args.name+'.json')
+    if record_path.exists():raise FileExistsError('evidence name already exists; choose a new name')
     before=source_digest()
-    with log.open('w') as stream:
+    with log.open('x') as stream:
         process=subprocess.run(command,stdout=stream,stderr=subprocess.STDOUT,text=True)
     if source_digest()!=before:
         raise RuntimeError('source changed during validation; retain log but do not record PASS')
@@ -34,8 +36,8 @@ def main():
         except metadata.PackageNotFoundError:pass
     record={'name':args.name,'source_tree_sha256':before,'status':'PASS' if process.returncode==0 else 'FAIL','command':command,
             'environment':{'system':platform.system(),'release':platform.release(),'machine':platform.machine()},'versions':versions,
-            'exit_code':process.returncode,'log':log.name,'summary':summaries[-1].strip() if summaries else 'Command completed; semantic assertion is documented in acceptance report.',
+            'exit_code':process.returncode,'log':log.name,'log_sha256':hashlib.sha256(log.read_bytes()).hexdigest(),'summary':summaries[-1].strip() if summaries else 'Command completed; semantic assertion is documented in acceptance report.',
             'gaps':[] if process.returncode==0 else ['command failed; inspect captured log']}
-    (args.evidence/(args.name+'.json')).write_text(json.dumps(record,indent=2)+'\n')
+    with record_path.open('x') as stream:stream.write(json.dumps(record,indent=2)+'\n')
     print(json.dumps(record));sys.exit(process.returncode)
 if __name__=='__main__':main()

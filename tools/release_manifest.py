@@ -22,11 +22,11 @@ def build_release_manifest(dist_dir:Path,evidence_dir:Path)->dict:
         record=json.loads(path.read_text())
         if record.get('status') not in {'PASS','NOT_RUN','FAIL'}:raise ValueError('unknown evidence status')
         if record['status']=='PASS':
-            if any(not record.get(k) for k in ('name','command','environment','versions','log','summary')) or record.get('exit_code')!=0:
+            if any(not record.get(k) for k in ('name','command','environment','versions','log','log_sha256','summary')) or record.get('exit_code')!=0:
                 raise ValueError('PASS requires command, versions, environment, successful result and log')
             log=(evidence_dir/record['log']).resolve()
             if not log.is_relative_to(evidence_dir.resolve()) or not log.is_file() or not log.stat().st_size:raise ValueError('missing/escaped evidence log')
-            record['log_sha256']=sha(log)
+            if record['log_sha256']!=sha(log):raise ValueError('evidence log digest changed')
         elif not record.get('gaps'):raise ValueError('unexecuted/failed evidence needs explicit gap')
         records.append(record)
     if not records:raise ValueError('no evidence records')
