@@ -55,8 +55,8 @@ def check_json_tree(value: Any, *, allow_float: bool = True):
         _invalid("not a JSON value")
 
 
-def decode_json(raw: bytes) -> JsonObject:
-    if len(raw) > MAX_JSON_BYTES:
+def decode_json(raw: bytes, *, max_bytes: int = MAX_JSON_BYTES) -> JsonObject:
+    if len(raw) > max_bytes:
         _invalid("JSON message exceeds byte limit")
     try:
         if raw.startswith(b"\xef\xbb\xbf"):
