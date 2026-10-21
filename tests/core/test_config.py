@@ -88,3 +88,9 @@ def test_invalid_queue_concurrency_rejected(tmp_path, value):
         "max_cpus = 2", "max_cpus = 2\nmax_concurrent = " + value))
     with pytest.raises(ControlError, match="SCHEMA_INVALID"):
         api().load_site(path)
+
+
+def test_executor_identifier_is_not_hardcoded_to_builtin_backends(tmp_path):
+    path = tmp_path / "site.toml"
+    path.write_text(config_text(tmp_path / "runtime").replace('kind = "local"', 'kind = "example-queue"'))
+    assert api().load_site(path).executor.kind == "example-queue"

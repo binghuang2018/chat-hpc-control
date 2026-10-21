@@ -15,6 +15,7 @@ chat-hpc-control = "chat_hpc_control.cli:main"
 
 [project.entry-points."chat_hpc_control.executors"]
 local = "chat_hpc_control.executors.local:LocalExecutor"
+task-spooler = "chat_hpc_control.executors.task_spooler:TaskSpoolerExecutor"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/chat_hpc_control"]

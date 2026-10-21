@@ -136,10 +136,8 @@ def build_service(site):
     from ..sources.base import SourceResolver
     from ..plugins.discovery import discover_enabled
     from ..plugins.host import EngineProxy, PluginHost
-    from ..executors.local import LocalExecutor
-    if site.executor.kind != "local":
-        raise ControlError("CAPABILITY_UNSUPPORTED", "requested executor is not installed")
-    executor = LocalExecutor(site)
+    from ..executors.loader import load_executor
+    executor = load_executor(site)
     store = StateStore.open(site.root)
     try:
         descriptors = discover_enabled(site)

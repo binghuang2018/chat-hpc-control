@@ -8,9 +8,9 @@ from chat_hpc_control.contracts.codec import parse_task
 from chat_hpc_control.contracts.execution import SubmissionRequest
 from chat_hpc_control.sources.bundle import BundleStore
 from chat_hpc_control.core.service import build_service
-def make_native(name, script, walltime=None):
+def make_native(name, script, walltime=None, executor=None):
     own=replace(site,root=site.root/name,engines={"demo":site.engines["demo"]},
-       executor=ExecutorConfig("local","example-local",{"max_cpus":2,"max_memory_mib":512}),
+       executor=executor or ExecutorConfig("local","example-local",{"max_cpus":2,"max_memory_mib":512}),
        settings={"plugin_allowlist":{"demo":"chat-hpc-demo-engine"}})
     own.root.mkdir(parents=True,exist_ok=True)
     archive=own.root/"source.tar"
