@@ -4,10 +4,11 @@ The approved Native implementation is active. This is not a release acceptance r
 
 | Stage | State | Current evidence |
 |---|---|---|
-| A1–A5 core | Complete | macOS Python 3.13: 86 passed, 3 Linux-only skips; isolated Linux x86_64 Python 3.13: 113 passed after worker hardening |
-| B compute/plugins/results | In progress | B1/B2 complete: isolated plugins and real detached local worker; B3 Task Spooler in progress |
-| C integrations | Pending | No real provider or production credentials used |
-| D release | Pending | No release/publication claim |
+| A1–A5 core | Complete | Frozen identity, authentication, durable intent and six shared tools |
+| B1–B5 compute/plugins/results | Complete | Isolated plugins, real Linux local/Task Spooler workers, synthetic QC profiles, immutable collections |
+| C1–C5 integrations | Complete at offline/SDK level | GitHub/MCP/three clients/publication; no real external API operations |
+| D1–D2 compatibility/docs | Complete | Read-only legacy identity and clean wheel/demo installation |
+| D3 release | In final verification | Python matrix, package rebuild, independent review and local candidate artifacts |
 
 Existing compute deployments remain untouched. Linux checks use a new local VM with no host-directory mounts. All source implementation so far is newly written from the approved contracts; no private source/history/results copied.
 

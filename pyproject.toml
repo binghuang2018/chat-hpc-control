@@ -8,9 +8,13 @@ version = "0.1.0"
 description = "Provider-neutral, reproducible control of native QC calculations"
 readme = "README.md"
 requires-python = ">=3.11,<3.14"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+classifiers = ["Development Status :: 4 - Beta", "Programming Language :: Python :: 3.11", "Programming Language :: Python :: 3.12", "Programming Language :: Python :: 3.13", "Operating System :: POSIX :: Linux"]
 dependencies = ["jsonschema>=4.26.0,<5"]
 
 [project.optional-dependencies]
+dev = ["pytest==9.1.1", "build==1.6.1", "hatchling==1.32.4", "twine>=6.2,<7"]
 github = ["httpx>=0.28.1,<0.29"]
 mcp = ["mcp>=2.3,<3"]
 openai = ["openai>=3.35.1,<4"]
@@ -30,6 +34,7 @@ orca = "chat_hpc_control.engines.orca:create_plugin"
 molpro = "chat_hpc_control.engines.molpro:create_plugin"
 
 [tool.hatch.build.targets.wheel]
+core-metadata-version = "2.4"
 packages = ["src/chat_hpc_control"]
 
 [tool.pytest.ini_options]
@@ -43,3 +48,7 @@ markers = [
   "provider_live: explicitly authorized real model API",
   "github_live: explicitly authorized external GitHub integration",
 ]
+
+[tool.hatch.build.targets.sdist]
+core-metadata-version = "2.4"
+include = ["src/", "tests/", "examples/", "docs/", "tools/", "scripts/", "constraints/", ".github/", "action.yml", "pyproject.toml", "README*", "LICENSE", "CHANGELOG.md", "CONTRIBUTING.md", "SECURITY.md"]
