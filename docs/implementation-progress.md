@@ -18,3 +18,9 @@ Implementation rulings: preserve A1–D3 task IDs despite numeric-only skill hel
 Implemented a dedicated explicit socket, server boot/PID/start/socket/binary identity, full queued-command hashes and immutable scheduler receipts. Read operations cannot start a replacement server. Queued-response loss is reconciled without a new enqueue. Reused numeric IDs do not override historical terminal evidence. Memory remains advisory.
 
 Evidence: macOS full suite **107 passed, 15 Linux-only skipped**; new isolated Linux x86_64 full suite **122 passed** (237.54 s), including five real Task Spooler scenarios. No legacy queue or n008 connection.
+
+## B4 — native QC profiles
+
+Original PySCF, ORCA and Molpro adapters are registered through installed entry points. Native molecule/method content is unrestricted; parser support is separately declared. Synthetic fixtures cover script evidence, ordered ORCA gradients, explicit Molpro TABLE metadata and a conservative XML subset. Missing XML convergence or ambiguous gradient ownership stays unverified. No private legacy code/results or licensed binaries were copied.
+
+Evidence: macOS full suite **129 passed, 15 Linux-only skipped**; isolated Linux full suite **144 passed** (266.03 s). ORCA/Molpro native software and numerical accuracy have not been live validated.

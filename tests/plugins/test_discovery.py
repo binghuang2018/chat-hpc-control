@@ -52,3 +52,18 @@ with patch("chat_hpc_control.plugins.discovery.installed_entries",return_value=[
  except ControlError as e: assert e.code=="PLUGIN_INCOMPATIBLE"
  else: raise AssertionError("duplicate engine ID accepted")
 ''')
+
+
+def test_builtin_native_engines_use_installed_worker(plugin_environment):
+    plugin_environment('''
+from dataclasses import replace
+native=replace(site,engines={name:RuntimeConfig('/missing/example-only') for name in ('pyscf','orca','molpro')},settings={})
+found=discover_enabled(native)
+assert set(found)=={'pyscf','orca','molpro'}
+for name in found:
+ proxy=EngineProxy(PluginHost(native),name)
+ assert proxy.info().distribution=='chat-hpc-control'
+ assert 'raw-only' in proxy.info().profiles
+ assert not proxy.probe(native.engines[name]).available
+ assert 'chat_hpc_control.engines.'+name not in sys.modules
+''')

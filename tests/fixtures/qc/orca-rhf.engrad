@@ -1,0 +1,15 @@
+# Synthetic test, not a computed scientific result
+# Number of atoms
+2
+# The current total energy in Eh
+-1.1
+# The current gradient in Eh/bohr
+0
+0
+0.1
+0
+0
+-0.1
+# The atomic numbers and current coordinates in Bohr
+1 0 0 0
+1 0 0 1.39839733222307

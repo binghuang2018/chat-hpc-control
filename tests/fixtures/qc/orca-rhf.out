@@ -1,0 +1,14 @@
+SYNTHETIC FIXTURE - not a computed scientific result
+Program Version 6.1.1
+Hartree-Fock type HFTyp .... RHF
+Your calculation utilizes the basis: STO-3G
+Total Charge Charge .... 0
+Multiplicity Mult .... 1
+CARTESIAN COORDINATES (ANGSTROEM)
+---------------------------------
+H 0.000000 0.000000 0.000000
+H 0.000000 0.000000 0.740000
+
+SCF CONVERGED AFTER 5 CYCLES
+FINAL SINGLE POINT ENERGY -1.1000000
+****ORCA TERMINATED NORMALLY****

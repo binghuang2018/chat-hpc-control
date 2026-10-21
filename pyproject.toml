@@ -17,6 +17,11 @@ chat-hpc-control = "chat_hpc_control.cli:main"
 local = "chat_hpc_control.executors.local:LocalExecutor"
 task-spooler = "chat_hpc_control.executors.task_spooler:TaskSpoolerExecutor"
 
+[project.entry-points."chat_hpc_control.engines"]
+pyscf = "chat_hpc_control.engines.pyscf:create_plugin"
+orca = "chat_hpc_control.engines.orca:create_plugin"
+molpro = "chat_hpc_control.engines.molpro:create_plugin"
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/chat_hpc_control"]
 
