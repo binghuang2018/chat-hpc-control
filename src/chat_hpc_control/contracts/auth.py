@@ -11,6 +11,9 @@ class CallContext:
     transport: str = "local"
     actor: str | None = None
     author: str | None = None
+    engines: frozenset[str] = frozenset()
+    repositories: frozenset[str] = frozenset()
+    read_all: bool = False
 
 
 @dataclass(frozen=True)

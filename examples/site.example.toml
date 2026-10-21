@@ -1,0 +1,35 @@
+# Private configuration template. Replace paths and UID before running.
+site_id = "example-site"
+root = "/absolute/path/to/a-new-private-runtime"
+policy_revision = "1"
+gateway_uids = []
+
+[principals.example-user]
+scopes = ["capabilities:read", "tasks:validate", "tasks:submit", "tasks:read", "results:read"]
+engines = ["demo"]
+repositories = []
+read_all = false
+
+[engines.demo]
+executable = "/absolute/path/to/python"
+
+[executor]
+kind = "local"
+identity = "example-local"
+
+[executor.options]
+max_cpus = 2
+max_memory_mib = 1024
+
+[repositories]
+
+[limits]
+max_input_files = 128
+max_input_bytes = 67108864
+max_output_files = 1024
+max_output_bytes = 268435456
+
+[local_principals]
+"1000" = "example-user"
+
+[settings]
