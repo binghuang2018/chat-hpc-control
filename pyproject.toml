@@ -52,4 +52,4 @@ markers = [
 [tool.hatch.build.targets.sdist]
 core-metadata-version = "2.4"
 exclude = ["/.superpowers/", "/.venv/", "/.worktrees/", "/runtime/", "**/__pycache__/", "**/*.pyc"]
-include = ["/src/", "/tests/", "/examples/", "/docs/", "/tools/", "/scripts/", "/constraints/", "/.github/", "/action.yml", "/pyproject.toml", "/README*", "/LICENSE", "/CHANGELOG.md", "/CONTRIBUTING.md", "/SECURITY.md"]
+include = ["/src/", "/tests/", "/examples/", "/docs/", "/tools/", "/scripts/", "/constraints/", "/.github/", "/action/", "/action.yml", "/pyproject.toml", "/README*", "/LICENSE", "/CHANGELOG.md", "/CONTRIBUTING.md", "/SECURITY.md"]

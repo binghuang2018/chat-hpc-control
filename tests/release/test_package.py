@@ -50,8 +50,10 @@ def test_sdist_rebuild(distributions,tmp_path):
     with tarfile.open(next(distributions.glob('*.tar.gz'))) as archive:
         # Test only our just-built archive; all paths still require one top root.
         names=archive.getnames();assert all(not n.startswith('/') and '..' not in n.split('/') for n in names)
-        allowed={'src','tests','examples','docs','tools','scripts','constraints','.github','action.yml','pyproject.toml','README.md','README.zh-CN.md','LICENSE','CHANGELOG.md','CONTRIBUTING.md','SECURITY.md','PKG-INFO','.gitignore'}
+        allowed={'src','tests','examples','docs','tools','scripts','constraints','.github','action','action.yml','pyproject.toml','README.md','README.zh-CN.md','LICENSE','CHANGELOG.md','CONTRIBUTING.md','SECURITY.md','PKG-INFO','.gitignore'}
         assert all(n.split('/')[1] in allowed for n in names), 'sdist contains undeclared development/private files'
+        top=names[0].split('/')[0]
+        assert {top+'/action/entrypoint.py',top+'/action/artifact_receipt.py'}<=set(names), 'sdist Action metadata lacks its helper scripts'
         archive.extractall(tmp_path,filter='data')
     project=next(p for p in tmp_path.iterdir() if p.is_dir())
     out=tmp_path/'rebuilt'
