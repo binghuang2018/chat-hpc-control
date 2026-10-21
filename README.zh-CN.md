@@ -13,6 +13,7 @@
 | [聊天模型接入](docs/chat-integrations.md) | ChatGPT/OpenAI、Claude/Anthropic、Gemini 共用工具及接入矩阵 |
 | [迁移清单](docs/migration-checklist.md) | 从现有 hpc-control 提取、兼容、旁路核验、切换与回退 |
 | [社区发布条件](docs/release-readiness.md) | 文档、许可证、脱敏、发布和验收边界 |
+| [v0.1 实施总计划](docs/superpowers/plans/2026-10-21-v0.1-implementation.md) | 四阶段实施文件、接口、测试场景、验收和外部操作边界 |
 
 ## 核心约定
 
@@ -27,4 +28,4 @@
 
 现有 `hpc-control` 和 n008 继续独立运行。本次仅在新的本地目录编写设计文档，未改变服务、队列、已登记输入、历史结果、运行环境或仓库远端，也未推送或发布公共仓库。
 
-依照 `brainstorming` 技能的架构流程，下一阶段先审阅本次书面设计，再编写实施计划；软件实现与部署须在之后进行。
+架构已于 2026-10-21 获用户确认，实施计划已编写，等待计划审阅及执行方式选择。当前仍只有文档；软件实现、发布与部署尚未进行。

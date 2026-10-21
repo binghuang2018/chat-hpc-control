@@ -37,8 +37,9 @@ These are **planned interfaces**, not a list of implemented integrations. API an
 - [Chat tools and provider compatibility matrix](docs/chat-integrations.md)
 - [Migration checklist preserving the existing deployment](docs/migration-checklist.md)
 - [Community release readiness and licensing decisions](docs/release-readiness.md)
+- [v0.1 implementation plan and four staged subplans](docs/superpowers/plans/2026-10-21-v0.1-implementation.md)
 
-The current review milestone is the written specification. Implementation planning, package publication, and live deployment are subsequent steps.
+The architecture was accepted on 2026-10-21. The written implementation plan is now available for review and selection of an execution method; implementation has not started. Package publication and live deployment remain later steps.
 
 ## Contributing and licensing
 
