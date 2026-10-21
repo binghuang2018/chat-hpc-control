@@ -17,6 +17,7 @@ def _parser():
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("capabilities")
     commands.add_parser("github-event").add_argument("--event", type=Path, required=True)
+    commands.add_parser("mcp").add_argument("--transport", choices=["stdio", "streamable-http"], default="stdio")
     validate = commands.add_parser("validate")
     validate.add_argument("--task", type=Path, required=True)
     validate.add_argument("--schema-only", action="store_true")
@@ -53,6 +54,10 @@ def main(argv: list[str] | None = None) -> int:
                 raise ControlError("SCHEMA_INVALID", "--site is required outside schema-only validation")
             from .core.config import load_site
             site = load_site(args.site)
+            if args.command == "mcp":
+                from .transports.mcp_server import serve_mcp
+                serve_mcp(site, args.transport)
+                return 0
             if args.command == "github-event":
                 from .transports.github import dispatch_event
                 response = dispatch_event(args.event, args.site)

@@ -36,3 +36,9 @@ Evidence: macOS full suite **149 passed, 17 Linux-only skipped**; isolated Linux
 Trusted Actions events are bound to a fetched Issue, fixed repository ID and allowlisted stable author/actor IDs. The gateway persists validate output and an Issue intent before submission. Edited frozen Issues conflict, retries retain one intent, and fixed Git tree/blob evidence is staged in a credential-free cache. The composite Action checks an administrator-installed pinned version; it does not install or execute task code.
 
 Evidence: macOS complete suite **161 passed, 17 Linux-only skipped**; isolated Linux GitHub/source/Action tests **23 passed**. GitHub API traffic was simulated; no real repository, Issue, run or publication was created.
+
+## C2 — authenticated MCP
+
+MCP SDK 2.3.0 exposes exactly the shared six schemas. Stdio derives local OS identity; loopback HTTP uses private expiring opaque bearer digests and stateless per-request context. Remote deployment needs a configured TLS gateway. No OAuth server or universal web-product compatibility is claimed.
+
+Evidence: actual SDK in-memory/ASGI tests **7 passed**; minimal-core macOS full suite **163 passed, 22 skipped** (17 Linux and 5 optional SDK tests, the latter executed separately). No model account, external server or paid API call.
