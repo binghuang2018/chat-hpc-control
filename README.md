@@ -1,48 +1,55 @@
 # chat-hpc-control
 
-**Provider-neutral chat tools for reproducible HPC calculations.**
+A provider-neutral control plane for reproducible native quantum-chemistry jobs.
+v0.1 provides a local broker, durable workers, extensible engine/executor plugins,
+declaration-driven results, and optional GitHub, MCP and model-client adapters.
 
-[中文说明](README.zh-CN.md) · [Architecture](docs/superpowers/specs/2026-10-21-chat-hpc-control-v0.1-design.md) · [Plugin protocol](docs/plugin-protocol-v1.md) · [Migration](docs/migration-checklist.md)
+**Local release candidate.** No public package/repository name is reserved by this
+checkout. Existing production deployments are outside this project and unchanged.
 
-## Status
+## Start here
 
-This independent project contains the **v0.1 design proposal**, dated 2026-10-21. It does not yet contain an installable Python package, a working GitHub Action, an MCP server, or provider SDK adapters. The repository and Python distribution name are `chat-hpc-control`; the proposed Python namespace is `chat_hpc_control`. Package and repository name availability has not been reserved.
+- [Linux synthetic quickstart](docs/quickstart.md) · [中文入门](docs/quickstart.zh-CN.md)
+- [Site configuration](docs/site-guide.md) · [Plugin developer guide](docs/plugin-guide.md)
+- [Results and numerical checks](docs/results-guide.md) · [Publication](docs/publication-guide.md)
+- [Compatibility and evidence](docs/compatibility.md) · [Release acceptance](docs/v0.1-acceptance.md)
 
-The design draws on an existing private deployment. That deployment remains separately operated; its operational history is not evidence that this new project has passed integration tests. No existing server has been migrated by preparing these documents.
+## What v0.1 does
 
-## Intended workflow
+| Component | Scope |
+| --- | --- |
+| Engines | Native PySCF Python, ORCA input, Molpro input; no molecule/method allowlist |
+| Executors | Linux x86_64 local detached workers and a dedicated Task Spooler queue |
+| Reproducibility | Fixed Git commit/blob or content-addressed bundle, execution manifests, durable intent/receipts |
+| Results | Immutable raw snapshots/collections, expected-record checks, signed pinned pagination |
+| Integrations | Six common tools through local CLI/RPC, authenticated MCP, trusted GitHub Issue gateway |
+| Model clients | OpenAI Responses, Anthropic Messages, Gemini Interactions; explicit model and API budget |
+| Publication | Separate operator-authorized directory/GitHub/Artifact workflows with immutable references |
+| Extension | Installed, administrator-approved engine/executor entry points; independent demo plugin |
 
-1. An authorized user supplies native QC inputs, including arbitrary-molecule PySCF Python scripts, ORCA inputs, or Molpro inputs.
-2. The broker resolves and freezes the input bundle, validates site policy and resource declarations, then submits exactly one execution for an idempotent request.
-3. A scheduler runs the calculation independently of the chat session or GitHub workflow lifetime.
-4. Collection preserves raw outputs and checks declared result quantities, units, shapes, and provenance.
-5. Chat clients retrieve status and immutable result references. Numerical completeness and scientific acceptance remain separate.
+Python 3.11–3.13. macOS supports core/client/schema work; native execution requires
+Linux x86_64. Model SDKs are optional extras. Commercial QC programs are separately
+licensed and installed by the site; no binaries or credentials are bundled.
 
-## Extension points
+## Boundaries
 
-| Layer | v0.1 design target | Extension boundary |
-|---|---|---|
-| Chat clients | ChatGPT/OpenAI, Claude/Anthropic, Gemini | Common tool schema; provider-specific client adapters |
-| Transports | CLI, GitHub Issues/Actions, MCP | Authentication and conversion to the broker contract |
-| Engines | PySCF, ORCA, Molpro | Operator-installed Python entry-point plugins |
-| Execution | Local process, Task Spooler | Durable submission/query interface; Slurm deferred |
-| Results | Raw bundles, declared energy/gradient records | Versioned parser profiles and publishers |
+Native scripts and plugins are trusted code, **not a sandbox or public multi-user
+execution service**. CPU affinity/thread settings are not exclusive allocation;
+memory is advisory. `walltime_seconds: null` has no framework calculation timeout,
+but an explicit site cap rejects incompatible requests. Chat/API time budgets do
+not cancel computations.
 
-These are **planned interfaces**, not a list of implemented integrations. API and web-app availability are tracked separately in the [chat integration design](docs/chat-integrations.md). Detailed specifications are currently written in Chinese; this README is the English entry point.
+`COMPLETED`, verified files, complete declared quantities and scientific acceptance
+are separate. `data_ready` requires `COMPLETED + VERIFIED + COMPLETE`;
+`scientific_acceptance` defaults to `NOT_EVALUATED`. Synthetic demos and parser
+fixtures do not establish scientific validity or every QC-version compatibility.
 
-## Read the proposal
+See the evidence matrix for actual native, fixture, SDK, API and product coverage.
+No paid model calls, real external publication or production migration were used
+to prepare this local candidate.
 
-- [Architecture and scope](docs/superpowers/specs/2026-10-21-chat-hpc-control-v0.1-design.md)
-- [Plugin protocol, task contract, and result semantics](docs/plugin-protocol-v1.md)
-- [Chat tools and provider compatibility matrix](docs/chat-integrations.md)
-- [Migration checklist preserving the existing deployment](docs/migration-checklist.md)
-- [Community release readiness and licensing decisions](docs/release-readiness.md)
-- [v0.1 implementation plan and four staged subplans](docs/superpowers/plans/2026-10-21-v0.1-implementation.md)
+## License and contributions
 
-The architecture was accepted on 2026-10-21. The written implementation plan is now available for review and selection of an execution method; implementation has not started. Package publication and live deployment remain later steps.
-
-## Contributing and licensing
-
-Design feedback should identify the affected contract, a concrete use case, and the proposed compatibility behavior. New engine proposals should state launch requirements, licensing constraints, supported parser profiles, and unsupported result cases.
-
-No software license has been granted in this snapshot. Apache-2.0 is proposed for project-owned code and documentation, subject to an explicit owner decision and a source-rights audit. Vendor software, licenses, binaries, private data, and credentials are excluded from the proposed community distribution. See [release readiness](docs/release-readiness.md).
+New project code is Apache-2.0; see [LICENSE](LICENSE),
+[source inventory](docs/source-inventory.md), [CONTRIBUTING](CONTRIBUTING.md) and
+[SECURITY](SECURITY.md). External programs and dependencies retain their own terms.

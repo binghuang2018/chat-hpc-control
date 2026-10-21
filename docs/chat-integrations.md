@@ -1,6 +1,6 @@
 # 多聊天模型接入设计
 
-日期：2026-10-21。状态：接口提案；本项目尚未实现或实测厂商 SDK、MCP 服务及网页应用连接。
+设计日期：2026-10-21；实现更新：2026-10-22。六工具、三家客户端与 MCP 已实现，完成离线协议/SDK/本地 HTTP 验证；真实模型 API 和网页产品未实测。详见 [证据矩阵](provider-compatibility.md)。
 
 ## 1. 命名与接入分级
 
@@ -10,15 +10,15 @@ ChatGPT 是 OpenAI 的产品，Claude 是 Anthropic 的产品，Gemini 是 Googl
 
 | 目标 | 官方机制／拟接入路径 | v0.1 设计边界 | 本项目状态 |
 |---|---|---|---|
-| OpenAI API | Responses 工具调用或远程 MCP | 公共工具转换；认证由 broker/网关处理 | 计划，未实现／未实测 |
+| OpenAI API | Responses 工具调用或远程 MCP | 公共工具转换；认证由 broker/网关处理 | 已实现；协议与 SDK 离线验证，真实 API 未实测 |
 | ChatGPT 网页／桌面产品 | 以当时产品支持的自定义工具／MCP 接入方式核实 | 按账号、工作区、网络和审批条件单独验收 | 计划，未验证可用性 |
-| Anthropic API | Messages 工具调用或 MCP connector | API 接入与可用 transport 按官方版本适配 | 计划，未实现／未实测 |
+| Anthropic API | Messages 工具调用或 MCP connector | API 接入与可用 transport 按官方版本适配 | 已实现；协议与 SDK 离线验证，真实 API 未实测 |
 | Claude 网页／桌面产品 | 以当时客户端支持的连接方式核实 | 不把 Messages API 能力等同产品账号能力 | 计划，未验证可用性 |
-| Gemini API | Function calling，由客户端转公共工具 | 先支持客户端执行调用；不依赖原生远程 MCP | 计划，未实现／未实测 |
+| Gemini API | Function calling，由客户端转公共工具 | 先支持客户端执行调用；不依赖原生远程 MCP | 已实现；协议与 SDK 离线验证，真实 API 未实测 |
 | Gemini 网页产品 | 单独核实可扩展机制 | 不承诺任意第三方 MCP 连接 | 延后验证 |
-| CLI / GitHub | 相同 broker 契约，无模型 API 依赖 | 可不使用任何聊天厂商或 API key | 计划从旧实现提取 |
+| CLI / GitHub | 相同 broker 契约，无模型 API 依赖 | 可不使用任何聊天厂商或 API key | 已独立实现；旧部署保持不变 |
 
-OpenAI 官方文档说明 Responses 可使用 MCP 服务；Anthropic 官方文档说明 Messages 可通过其 MCP connector 调用远端工具。Gemini 官方文档说明 function calling 可产生外部函数调用参数。由此推导，统一工具后分别包装 API 是可行设计；这仍需要各客户端独立实现和实测。[OpenAI MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)、[Anthropic MCP connector](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector)、[Gemini function calling](https://ai.google.dev/gemini-api/docs/function-calling)。查阅日期：2026-10-21。
+OpenAI 官方文档说明 Responses 可使用 MCP 服务；Anthropic 官方文档说明 Messages 可通过其 MCP connector 调用远端工具。Gemini 官方文档说明 function calling 可产生外部函数调用参数。由此推导，统一工具后分别包装 API 是可行设计；客户端已独立实现；离线验证与真实 API/产品实测分别记录。[OpenAI MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)、[Anthropic MCP connector](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector)、[Gemini function calling](https://ai.google.dev/gemini-api/docs/function-calling)。查阅日期：2026-10-21。
 
 ## 2. 公共工具表
 

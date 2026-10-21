@@ -1,0 +1,19 @@
+{
+  "schema": "chat-hpc-control/task/v1",
+  "task_id": "molpro-h2",
+  "engine_id": "molpro",
+  "engine_options": {
+    "profile": "raw-only"
+  },
+  "source": {
+    "kind": "bundle",
+    "bundle_id": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "entrypoint": "job.inp",
+  "resources": {
+    "cpus": 1,
+    "memory_mib": 512,
+    "walltime_seconds": null
+  },
+  "expected_results": null
+}

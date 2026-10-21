@@ -66,3 +66,9 @@ Evidence: macOS complete suite **213 passed, 23 skipped** (17 Linux + 5 MCP SDK 
 The offline inspector preserves original bytes, canonicalization algorithm and claimed digest. Authenticated old QC Issues return mappings/gaps only. Running legacy job numbers are never adopted. The source inventory records original implementation, synthetic fixtures, external dependencies and the unchanged read-only legacy reference; no private source/history/data was copied.
 
 Evidence: **5 legacy tests passed**, read-only permissions plus before/after hashes; host full suite **218 passed, 23 explicit skips**; isolated Linux legacy/Issue/CLI tests **18 passed**. No real production snapshot or migration was performed.
+
+## D2 — clean-site documentation and executable quickstart
+
+English/Chinese quickstarts, plugin/site/results guides, compatibility matrix, native input examples and an uninstalled systemd template are present. The public `demo` CLI provisions only a new owned synthetic site and refuses foreign resume configuration. Test discovery is limited to tests; a frozen-input tripwire is not imported. Historical design-only status was reconciled with current evidence.
+
+Evidence: docs/guard tests **4 passed**; minimal-core host full suite **222 passed, 24 skips**; Linux docs plus fresh wheel/demo installation in empty HOME **5 passed** (37.06 s). Demo resume retains run and collection IDs. The systemd template remains uninstalled/unverified; no commercial native job or paid API call was run.

@@ -1,0 +1,7 @@
+***,H2 raw-only integration example
+memory,8,m
+angstrom
+geometry={H;H,1,0.74}
+basis=sto-3g
+{hf}
+{forces}

@@ -1,0 +1,27 @@
+site_id = "example-demo"
+root = @ROOT@
+policy_revision = "1"
+gateway_uids = []
+[principals.demo]
+scopes = ["capabilities:read", "tasks:validate", "tasks:submit", "tasks:read", "results:read"]
+engines = ["demo"]
+repositories = []
+[engines.demo]
+executable = @PYTHON@
+[executor]
+kind = "local"
+identity = "example-demo-local"
+[executor.options]
+max_cpus = @CPUS@
+max_memory_mib = 512
+max_concurrent = 1
+[repositories]
+[limits]
+max_input_files = 16
+max_input_bytes = 65536
+max_output_files = 64
+max_output_bytes = 1048576
+[local_principals]
+"@UID@" = "demo"
+[settings.plugin_allowlist]
+demo = "chat-hpc-demo-engine"

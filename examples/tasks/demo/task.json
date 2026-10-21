@@ -1,0 +1,17 @@
+{
+  "schema": "chat-hpc-control/task/v1",
+  "task_id": "demo",
+  "engine_id": "demo",
+  "engine_options": {},
+  "source": {
+    "kind": "bundle",
+    "bundle_id": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "entrypoint": "job.py",
+  "resources": {
+    "cpus": 1,
+    "memory_mib": 64,
+    "walltime_seconds": null
+  },
+  "expected_results": null
+}

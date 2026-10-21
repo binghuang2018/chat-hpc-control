@@ -1,31 +1,24 @@
 # chat-hpc-control
 
-面向社区的聊天模型与 HPC 计算控制框架，首版聚焦量子化学任务。
+面向社区的多模型原生量化计算控制框架，当前交付为 **v0.1 本地发行候选**。
+现有生产站点不属于本项目的迁移范围，本次未改变其部署。
 
-## 当前交付
+- [中文 quickstart](docs/quickstart.zh-CN.md) / [English](docs/quickstart.md)
+- [站点配置](docs/site-guide.md)、[插件教程](docs/plugin-guide.md)
+- [结果规则](docs/results-guide.md)、[发布与原始文件](docs/publication-guide.md)
+- [兼容性矩阵](docs/compatibility.md)、[验收报告](docs/v0.1-acceptance.md)
 
-本目录是 **2026-10-21 的 v0.1 设计项目**，已统一命名为 `chat-hpc-control`，拟用 Python 命名空间为 `chat_hpc_control`。本阶段交付架构说明、插件协议和迁移清单，尚无可安装的软件包、可运行的 Action、MCP 服务或模型 SDK 适配器。
+支持原生 PySCF Python、ORCA 和 Molpro 输入。分子与方法由冻结输入决定；
+程序能运行、解析器支持、数值齐全和科学通过分别记录。Linux x86_64 提供
+local/独立 Task Spooler 执行器；macOS 提供核心协议与客户端能力。
 
-| 文档 | 内容 |
-|---|---|
-| [v0.1 架构说明](docs/superpowers/specs/2026-10-21-chat-hpc-control-v0.1-design.md) | 模块边界、数据流、授权、任务生命周期、首版范围 |
-| [插件协议 v1](docs/plugin-protocol-v1.md) | QC 引擎、执行器、任务输入、结果、第三方扩展规则 |
-| [聊天模型接入](docs/chat-integrations.md) | ChatGPT/OpenAI、Claude/Anthropic、Gemini 共用工具及接入矩阵 |
-| [迁移清单](docs/migration-checklist.md) | 从现有 hpc-control 提取、兼容、旁路核验、切换与回退 |
-| [社区发布条件](docs/release-readiness.md) | 文档、许可证、脱敏、发布和验收边界 |
-| [v0.1 实施总计划](docs/superpowers/plans/2026-10-21-v0.1-implementation.md) | 四阶段实施文件、接口、测试场景、验收和外部操作边界 |
+任务显式声明 CPU、内存和时限。`walltime_seconds: null` 不设置框架计算超时；
+站点明确设定上限时会拒绝不兼容请求。内存为 advisory，CPU affinity 不代表
+独占分配。原生脚本及插件属于可信代码，框架不是沙箱或匿名多租户服务。
 
-## 核心约定
+结果采用不可变集合和固定分页。只有执行完成、证据闭合、声明的数量与物理量
+齐全时 `data_ready=true`；科学验收默认 `NOT_EVALUATED`。模型 SDK 可选，
+OpenAI/Anthropic/Gemini 的协议与 SDK 测试不能替代真实 API 或网页产品验收。
 
-- 不绑定聊天模型厂商；模型 ID 与 API 凭据由使用者在客户端配置。
-- GitHub、CLI、MCP 共用 broker；聊天模型不能自行授予提交权限。
-- 接受任意分子的原生 PySCF Python 脚本、ORCA/Molpro 输入，通过固定提交或冻结文件包登记来源和哈希。是否需要人工审核由站点策略决定，不把节点本地人工登记设为框架的统一前提。
-- 核心不内置计算时长上限；`walltime_seconds: null` 表示不由框架设置计算超时。外部调度器、站点和 GitHub 控制流程的限制须单独报告。
-- 原始结果、完整性、执行状态和科学验收分别记录；`data_ready=true` 不代表科学结论已获验证。
-- 通过 QC 引擎插件接入新软件；核心不携带商业软件、许可证或模型 SDK。
-
-## 与现有部署的关系
-
-现有 `hpc-control` 和 n008 继续独立运行。本次仅在新的本地目录编写设计文档，未改变服务、队列、已登记输入、历史结果、运行环境或仓库远端，也未推送或发布公共仓库。
-
-架构已于 2026-10-21 获用户确认，实施计划已编写，等待计划审阅及执行方式选择。当前仍只有文档；软件实现、发布与部署尚未进行。
+本地候选包含代码、测试、示例、文档和发行产物；没有推送或实际发布，没有使用
+生产凭据或付费模型调用。新代码采用 Apache-2.0，商业程序及许可证由站点提供。

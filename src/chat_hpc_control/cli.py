@@ -16,6 +16,10 @@ def _parser():
     parser.add_argument("--site", type=Path, help="explicit private site TOML")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("capabilities")
+    demo = commands.add_parser("demo")
+    demo.add_argument("--root", type=Path, required=True)
+    demo.add_argument("--resume", action="store_true")
+    demo.add_argument("--wait-seconds", type=int, default=120)
     legacy = commands.add_parser("legacy")
     legacy.add_argument("--snapshot", type=Path, required=True)
     publication = commands.add_parser("publication")
@@ -53,7 +57,10 @@ def _parser():
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
-        if args.command == "legacy":
+        if args.command == "demo":
+            from .demo import run_demo
+            response = ToolResponse(str(uuid.uuid4()), True, data=run_demo(args.root, resume=args.resume, wait_seconds=args.wait_seconds))
+        elif args.command == "legacy":
             from dataclasses import asdict
             from .compat.legacy import inspect_legacy
             response = ToolResponse(str(uuid.uuid4()), True, data=asdict(inspect_legacy(args.snapshot)))

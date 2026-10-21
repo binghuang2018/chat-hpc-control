@@ -1,0 +1,22 @@
+# Uninstalled new-site template. Validate service/cgroup behavior before deployment.
+[Unit]
+Description=Chat HPC Control broker for example-site
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=example-chc-broker
+Group=example-chc-broker
+WorkingDirectory=/example/private
+ExecStart=/example/venv/bin/chat-hpc-control --site /example/private/site.toml broker serve
+Restart=on-failure
+RestartSec=3
+UMask=0077
+KillMode=process
+TimeoutStopSec=20
+NoNewPrivileges=true
+# This is not a sandbox or a hard CPU/memory allocation. Keep credentials separate.
+
+[Install]
+WantedBy=multi-user.target

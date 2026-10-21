@@ -1,8 +1,8 @@
 # 插件协议 v1：chat-hpc-control
 
-日期：2026-10-21。状态：规范提案；类型签名和配置片段用于设计评审，尚非可导入的软件 API。
+设计日期：2026-10-21；实现更新：2026-10-22。v1 已实现；可导入 API 与完整签名见 `chat_hpc_control.contracts` 及 [插件指南](plugin-guide.md)，实际验收范围见 [兼容性](compatibility.md)。
 
-本文的“必须”“拒绝”是未来实现的验收要求。入口使用 `chat-hpc-control/task/v1`，结果使用 `chat-hpc-control/result/v1`，Python 插件 API 为 `1.0`；项目发行版本拟为 `0.1.0`。三者与 QC 软件版本相互独立。
+本文的“必须”“拒绝”是 v1 实现约束与验收要求。入口使用 `chat-hpc-control/task/v1`，结果使用 `chat-hpc-control/result/v1`，Python 插件 API 为 `1.0`；项目发行版本拟为 `0.1.0`。三者与 QC 软件版本相互独立。
 
 ## 1. 插件类别与发现
 
@@ -94,7 +94,7 @@ manifest 不包含自己的摘要、时间戳、请求身份、输出结果或�
 
 ## 4. 引擎接口
 
-以下为语言层签名示意；类型名称由此文规定的序列化对象承载，非现有 Python 实现：
+以下为语言层简写；准确 dataclass 字段和协议签名以可导入的 `contracts` 模块为准：
 
 ```python
 class EnginePlugin:
@@ -169,7 +169,7 @@ executor 必须让长任务独立于控制进程运行，worker 自己落盘终�
 
 输出记录集合须与声明的 ID 一一对应，不允许通过去重、排序换原子或丢弃异常记录来“补齐”。输入合同和输出 metadata 不一致时报告差异。解析器不能仅复制合同里的方法和态作为输出证据；无法从所选 profile 的来源确认时必须 `UNVERIFIED`。PySCF JSON profile 的信息可能由用户脚本提供，要标记 `evidence_level=script-reported`，不能视为独立程序解析认证。
 
-初始迁入的 profile 候选：
+首版 profile 规则（原生软件实测范围另列）：
 
 | profile ID | 目标 | 限制 |
 |---|---|---|
@@ -194,7 +194,7 @@ QC 软件版本通过运行时探测固定；不承诺上述 profile 覆盖每�
 
 `retryable=true` 仅表示同一语义请求可以重试；不能授权新计算。提交结果未知时须复用原幂等 key 并先 reconcile；发布未知时先对固定内容 readback，不生成不关联的重复集合。
 
-后续插件符合性材料包括：入口 schema、固定 argv 样例、软件探测证据、最小原生输出 fixture、缺失/异常输出 fixture、可复现解析结果、资源能力声明和凭据隔离检查。核心 CI 的发现范围必须限定在专用测试目录，避免将冻结 PySCF 输入当作测试执行。当前文档阶段未添加或运行这些软件测试。
+后续插件符合性材料包括：入口 schema、固定 argv 样例、软件探测证据、最小原生输出 fixture、缺失/异常输出 fixture、可复现解析结果、资源能力声明和凭据隔离检查。核心 CI 的发现范围必须限定在专用测试目录，避免将冻结 PySCF 输入当作测试执行。实施测试及原生/合成/SDK/API 的证据分级见 [验收记录](implementation-progress.md)。
 
 ## 8. 参考
 

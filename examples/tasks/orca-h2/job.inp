@@ -1,0 +1,7 @@
+! RHF STO-3G EnGrad TightSCF
+%pal nprocs 1 end
+%maxcore 256
+* xyz 0 1
+H 0 0 0
+H 0 0 0.74
+*
