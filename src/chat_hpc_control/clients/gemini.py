@@ -24,9 +24,11 @@ class GeminiAdapter(NativeClient):
 
     def connect(self,api_key):
         try:from google import genai
+        # Retry policy is explicit; a client turn owns the API attempt budget.
+        # The calculation intent remains durable even if a request is uncertain.
         except ImportError as exc:raise ControlError('CAPABILITY_UNSUPPORTED','install chat-hpc-control[gemini]') from exc
         if not api_key:raise ControlError('AUTH_DENIED','explicit Gemini API key is required')
-        self.client=genai.Client(api_key=api_key);return self
+        self.client=genai.Client(api_key=api_key,http_options={"retry_options":{"attempts":1}});return self
 
     def request(self,input_items,*,previous_id=None):
         self._configured()

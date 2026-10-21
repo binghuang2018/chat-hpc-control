@@ -48,3 +48,9 @@ Evidence: actual SDK in-memory/ASGI tests **7 passed**; minimal-core macOS full 
 OpenAI Responses, Anthropic Messages and Gemini Interactions retain the same schemas and correlate results using the original provider call ID. They reject partial/invalid calls and preserve continuation metadata. SDKs are imported only on explicit connection; models are explicitly chosen.
 
 Evidence: **24 provider protocol tests passed**; three separately installed optional environments imported/constructed SDK clients with sockets forbidden: OpenAI 3.36.0, Anthropic 1.17.0, Google GenAI 2.32.0. API calls: **0**. Minimal-core macOS full suite **187 passed, 22 explicit skips**.
+
+## C4 — durable human intent and tool loops
+
+Private SQLite client sessions bind an authenticated site/principal, explicit human request ID, validated task and one durable submission key. Unknown dispatches resume the saved batch; provider switches retain the same calculation intent. Explicit reruns reference an existing run. Chat budgets do not cancel computation or change its walltime.
+
+Evidence: **34 client/cross-provider tests passed** on macOS and isolated Linux, including real broker idempotency with a test executor, parallel key reservations, lost dispatch and provider-switch retries. Minimal-core macOS full suite **197 passed, 22 explicit skips**. All provider responses were synthetic; API calls remain zero.
