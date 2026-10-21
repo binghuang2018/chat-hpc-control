@@ -4,8 +4,8 @@ The approved Native implementation is active. This is not a release acceptance r
 
 | Stage | State | Current evidence |
 |---|---|---|
-| A1–A5 core | Complete | macOS Python 3.13: 86 passed, 3 Linux-only skips; isolated Linux x86_64 Python 3.13: 89 passed |
-| B compute/plugins/results | In progress | Native runtime assembly not yet enabled |
+| A1–A5 core | Complete | macOS Python 3.13: 86 passed, 3 Linux-only skips; isolated Linux x86_64 Python 3.13: 113 passed after worker hardening |
+| B compute/plugins/results | In progress | B1/B2 complete: isolated plugins and real detached local worker; B3 Task Spooler in progress |
 | C integrations | Pending | No real provider or production credentials used |
 | D release | Pending | No release/publication claim |
 
