@@ -145,7 +145,11 @@ def build_service(site):
             raise ControlError("CAPABILITY_UNSUPPORTED", "configured engine distribution is not installed")
         host = PluginHost(site)
         engines = {name: EngineProxy(host, name) for name in descriptors}
-        return ToolService(Broker(site, store, SourceResolver(), engines, executor))
+        from ..results.reader import CollectionReader
+        service = ToolService(Broker(site, store, SourceResolver(), engines, executor), CollectionReader(store, site))
+        from .reconciler import reconcile_once
+        service.reconcile = lambda: reconcile_once(store, site)
+        return service
     except Exception:
         store.close()
         raise

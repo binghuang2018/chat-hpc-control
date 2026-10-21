@@ -11,6 +11,7 @@ import sys
 import threading
 import uuid
 import json
+import time
 
 from ..contracts.auth import CallContext, PeerIdentity
 from ..contracts.codec import MAX_JSON_BYTES, decode_json, encode_response
@@ -44,8 +45,16 @@ def serve(site, service) -> None:
         server.bind(str(path))
         path.chmod(0o600)
         server.listen(16)
+        server.settimeout(0.5)
+        next_reconcile = 0
         while True:
-            connection, _ = server.accept()
+            if getattr(service, "reconcile", None) and time.monotonic() >= next_reconcile:
+                service.reconcile()
+                next_reconcile = time.monotonic() + 1
+            try:
+                connection, _ = server.accept()
+            except socket.timeout:
+                continue
             with connection:
                 connection.settimeout(5)
                 try:

@@ -24,3 +24,9 @@ Evidence: macOS full suite **107 passed, 15 Linux-only skipped**; new isolated L
 Original PySCF, ORCA and Molpro adapters are registered through installed entry points. Native molecule/method content is unrestricted; parser support is separately declared. Synthetic fixtures cover script evidence, ordered ORCA gradients, explicit Molpro TABLE metadata and a conservative XML subset. Missing XML convergence or ambiguous gradient ownership stays unverified. No private legacy code/results or licensed binaries were copied.
 
 Evidence: macOS full suite **129 passed, 15 Linux-only skipped**; isolated Linux full suite **144 passed** (266.03 s). ORCA/Molpro native software and numerical accuracy have not been live validated.
+
+## B5 — immutable declared results
+
+The broker writer reconciles independently of API reads, recovers reservations, observes native terminal receipts and copies bounded regular outputs to immutable snapshots. Collections bind parser/assessment code, declared contract and raw evidence. Cursor HMACs bind run, collection, fields and offset; newer indexes do not redirect old pages. Unsupported/missing evidence, invalid values and missing quantities remain distinct. Terminal execution is not downgraded by later collection failures.
+
+Evidence: macOS full suite **149 passed, 17 Linux-only skipped**; isolated Linux full suite **166 passed** (312.40 s), including native collect/read and output-symlink rejection. No scientific acceptance was performed.
