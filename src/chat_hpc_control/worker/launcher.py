@@ -8,6 +8,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import threading
 import time
 
 from ..contracts.codec import decode_json
@@ -15,6 +16,7 @@ from ..contracts.errors import ControlError
 from ..contracts.execution import ApprovedExecutionPlan, RunHandle, SubmissionReceipt
 from ..plugins.wire import to_wire
 from ..sources.bundle import read_verified
+from ..core.manifest import execution_identity
 from .receipt import digest_file, verify_process, write_once
 
 
@@ -28,6 +30,7 @@ def validate_approval(approved: ApprovedExecutionPlan):
     manifest = decode_json(raw)
     if (manifest.get("schema") != "chat-hpc-control/task-manifest/v1"
             or manifest["site"]["site_id"] != approved.site_id
+            or manifest.get("control") != execution_identity()
             or manifest["task"]["resources"] != asdict(approved.plan.resources)):
         raise ControlError("INPUT_CHANGED", "execution manifest is not an approved task")
     read_verified(root, manifest["files"])
@@ -93,6 +96,7 @@ def launch(plan: ApprovedExecutionPlan, reservation_id: str, *, executor_id="loc
                                     "--launch-file", str(path)], stdin=subprocess.DEVNULL,
                                    stdout=log, stderr=log, env=environment, cwd=root,
                                    close_fds=True, start_new_session=True)
+    threading.Thread(target=process.wait, name=f"chc-worker-reap-{process.pid}", daemon=True).start()
     deadline = time.monotonic() + 10
     while time.monotonic() < deadline:
         if (root / "startup.json").is_file():

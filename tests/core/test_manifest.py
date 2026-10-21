@@ -50,3 +50,17 @@ def test_manifest_stability(sample_task, tmp_path):
     (frozen.input_root / "job.py").write_bytes(b"tampered")
     with pytest.raises(ControlError, match="INPUT_CHANGED"):
         m.freeze(resolved, site, manifest=first)
+
+
+def test_control_runtime_upgrade_changes_execution_identity(sample_task, tmp_path, monkeypatch):
+    m = api()
+    assert hasattr(m, "execution_identity"), "worker/control code is not bound to the manifest"
+    task = ResolvedTask(parse_task(json.dumps(sample_task).encode()), {"job.py": b"print(1)\n"}, {"kind": "bundle"})
+    site = SiteConfig("example-site", tmp_path / "site", {}, {}, ExecutorConfig("local", "local-1"))
+    plugin = PluginInfo("pyscf", "example-engine", "1", "a" * 64)
+    probe = ProbeReport(True, "1", {"program_sha256": "b" * 64})
+    monkeypatch.setattr(m, "execution_identity", lambda: {"version": "0.1.0", "code_sha256": "a" * 64})
+    old = m.build_manifest(task, plugin, probe, site)
+    monkeypatch.setattr(m, "execution_identity", lambda: {"version": "0.1.0", "code_sha256": "b" * 64})
+    new = m.build_manifest(task, plugin, probe, site)
+    assert old != new

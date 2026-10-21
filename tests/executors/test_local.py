@@ -76,3 +76,17 @@ try:
  assert observed.execution_state=="FAILED",observed
 finally: service.broker.store.close()
 ''')
+
+
+def test_completed_workers_are_reaped_by_live_controller(plugin_environment):
+    plugin_environment(HELPERS + '''
+service,request,context=make_native("reaping-case","print('complete')")
+try:
+ receipt=service.broker.submit(request,context)
+ assert terminal(service.broker.executor,receipt.handle).execution_state=="COMPLETED"
+ process=Path("/proc")/str(receipt.handle.identity["pid"])
+ end=time.monotonic()+2
+ while process.exists() and time.monotonic()<end: time.sleep(.02)
+ assert not process.exists(),"controller retained an unreaped worker"
+finally: service.broker.store.close()
+''')

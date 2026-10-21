@@ -17,6 +17,26 @@ from ..sources.base import check_limits, checked_paths
 from ..sources.bundle import file_records, read_verified
 
 
+def execution_identity() -> JsonObject:
+    from .. import __version__
+    import importlib.metadata
+    import platform
+    import sys
+    package = Path(__file__).resolve().parents[1]
+    roots = {"contracts", "core", "worker", "executors", "plugins", "sources", "schemas"}
+    records = []
+    for path in sorted(package.rglob("*")):
+        relative = path.relative_to(package)
+        if (path.is_file() and "__pycache__" not in relative.parts
+                and path.suffix in {".py", ".json"}
+                and (relative.parts[0] in roots or relative.name == "__init__.py")):
+            records.append({"path": relative.as_posix(), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
+    return {"version": __version__, "code_sha256": hashlib.sha256(canonical_bytes({"files": records})).hexdigest(),
+            "python_version": platform.python_version(),
+            "python_sha256": hashlib.sha256(Path(sys.executable).resolve().read_bytes()).hexdigest(),
+            "jsonschema_version": importlib.metadata.version("jsonschema")}
+
+
 def canonical_bytes(value: JsonObject) -> bytes:
     check_json_tree(value, allow_float=False)
     return json.dumps(value, ensure_ascii=False, allow_nan=False,
@@ -29,6 +49,10 @@ def build_manifest(task: ResolvedTask, plugin: PluginInfo, probe: ProbeReport, s
     if runtime:
         runtime_identity = {"executable": runtime.executable, "mpi_argv": list(runtime.mpi_argv),
                             "environment_sha256": hashlib.sha256(canonical_bytes(runtime.environment)).hexdigest()}
+    executor_runtime = {}
+    if site.executor.kind == "task-spooler" and site.executor.options.get("executable"):
+        binary = Path(site.executor.options["executable"]).resolve()
+        executor_runtime["binary_sha256"] = hashlib.sha256(binary.read_bytes()).hexdigest()
     return {
         "schema": "chat-hpc-control/task-manifest/v1",
         "canonicalization": "canonical-json-v1",
@@ -38,8 +62,9 @@ def build_manifest(task: ResolvedTask, plugin: PluginInfo, probe: ProbeReport, s
                    "distribution": plugin.distribution, "version": plugin.version,
                    "code_sha256": plugin.code_sha256},
         "program": {"version": probe.version, "identity": probe.identity, "runtime": runtime_identity},
+        "control": execution_identity(),
         "site": {"site_id": site.site_id, "policy_revision": site.policy_revision,
-                 "executor": asdict(site.executor), "limits": site.limits},
+                 "executor": asdict(site.executor), "executor_runtime": executor_runtime, "limits": site.limits},
     }
 
 
