@@ -128,4 +128,5 @@ class Broker:
         row = self.store.get_run(run_id)
         authorize_run(context, row["owner"], row["site_id"], "tasks:read")
         return RunStatus(run_id, row["execution_state"], row["observed_at"],
-                         collection_state=row["evidence"].get("collection_state", "PENDING"), evidence=row["evidence"])
+                         collection_state=row["evidence"].get("collection_state", "PENDING"),
+                         publication_state=row["evidence"].get("publication_state", "NOT_REQUESTED"), evidence=row["evidence"])

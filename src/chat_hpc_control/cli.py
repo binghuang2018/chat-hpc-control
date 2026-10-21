@@ -16,6 +16,12 @@ def _parser():
     parser.add_argument("--site", type=Path, help="explicit private site TOML")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("capabilities")
+    publication = commands.add_parser("publication")
+    publication.add_argument("operation", choices=["publish", "stage", "record-upload"])
+    publication.add_argument("--target", required=True)
+    publication.add_argument("--collection-root", type=Path, required=True)
+    publication.add_argument("--upload-result", type=Path)
+    publication.add_argument("--previous-receipt", type=Path)
     commands.add_parser("github-event").add_argument("--event", type=Path, required=True)
     commands.add_parser("mcp").add_argument("--transport", choices=["stdio", "streamable-http"], default="stdio")
     validate = commands.add_parser("validate")
@@ -54,6 +60,16 @@ def main(argv: list[str] | None = None) -> int:
                 raise ControlError("SCHEMA_INVALID", "--site is required outside schema-only validation")
             from .core.config import load_site
             site = load_site(args.site)
+            if args.command == "publication":
+                from .publishers.admin import operate
+                from .contracts.codec import decode_json
+                from .contracts.results import PublishReceipt
+                data = operate(site, operation=args.operation, target=args.target, collection_root=args.collection_root,
+                    upload_result=decode_json(args.upload_result.read_bytes()) if args.upload_result else None,
+                    previous=PublishReceipt(**decode_json(args.previous_receipt.read_bytes())) if args.previous_receipt else None)
+                response = ToolResponse(str(uuid.uuid4()), True, data=data)
+                print(encode_response(response).decode())
+                return 0 if data.get("state", "PUBLISHED") == "PUBLISHED" else 2
             if args.command == "mcp":
                 from .transports.mcp_server import serve_mcp
                 serve_mcp(site, args.transport)

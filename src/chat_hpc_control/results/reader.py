@@ -111,8 +111,15 @@ class CollectionReader:
                 if collection_id:raise ValueError('collection absent')
                 return {'run_id':run_id,'collection_id':None,'collection_state':'PENDING','files':[]}
             documents=read_collection(ref)
+            publications=[]
+            for path in sorted((self.site.root/'publications'/ref.collection_id).glob('*.json')):
+                raw=path.read_bytes()
+                if path.is_symlink() or hashlib.sha256(raw).hexdigest()!=path.stem:raise ValueError('publication receipt changed')
+                receipt=decode_json(raw)
+                if receipt['collection_id']!=ref.collection_id:raise ValueError('publication belongs to another collection')
+                publications.append(receipt)
             return {'run_id':run_id,'collection_id':ref.collection_id,'collection_state':'COLLECTED',
                     'files':documents['raw-manifest.json']['files'],'availability':'LOCAL_ONLY',
-                    'summary':documents['summary.json']}
+                    'summary':documents['summary.json'],'publication_receipts':publications}
         except (OSError,ValueError,KeyError,TypeError) as exc:
             raise ControlError('RESULT_UNVERIFIED','collection manifest could not be verified') from exc

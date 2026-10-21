@@ -32,7 +32,9 @@ def create_collection(run_id,snapshot,report):
              'manifest_sha256':snapshot.manifest_sha256,'terminal':snapshot.terminal,
              'parser':report.parser_identity,'profile':report.profile,'contract':contract,
              'assessment':{'version':'1','code_sha256':hashlib.sha256(Path(__file__).with_name('completeness.py').read_bytes()).hexdigest()},
-             'snapshot_identity':hashlib.sha256(result_bytes(snapshot.files)).hexdigest()},
+             'snapshot_identity':hashlib.sha256(result_bytes(snapshot.files)).hexdigest(),
+             'snapshot_sha256':hashlib.sha256(result_bytes({'files':snapshot.files,'terminal':snapshot.terminal,
+                 'manifest_sha256':snapshot.manifest_sha256})).hexdigest()},
         'raw-manifest.json':{'files':snapshot.files}}
     payload={name:result_bytes(data) for name,data in documents.items()}
     inventory=[{'path':name,'size':len(raw),'sha256':hashlib.sha256(raw).hexdigest()} for name,raw in sorted(payload.items())]

@@ -10,7 +10,7 @@ from ..contracts.codec import validate_schema
 from ..contracts.config import ExecutorConfig, RuntimeConfig, SiteConfig
 from ..contracts.errors import ControlError
 
-SCOPES = {"capabilities:read", "tasks:validate", "tasks:submit", "tasks:read", "results:read"}
+SCOPES = {"capabilities:read", "tasks:validate", "tasks:submit", "tasks:read", "results:read", "results:publish"}
 
 
 def _invalid(message: str):

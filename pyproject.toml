@@ -35,7 +35,7 @@ packages = ["src/chat_hpc_control"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
-addopts = "-ra"
+addopts = "--import-mode=importlib -ra"
 markers = [
   "linux: requires a Linux execution host",
   "task_spooler: requires a private Task Spooler instance",

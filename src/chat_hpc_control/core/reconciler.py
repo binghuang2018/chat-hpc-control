@@ -3,6 +3,7 @@
 from ..contracts.codec import decode_json
 from ..contracts.errors import ControlError
 from ..contracts.results import ParseReport
+from ..contracts.auth import CallContext
 from ..executors.loader import load_executor
 from ..plugins.host import EngineProxy,PluginHost
 from ..plugins.discovery import discover_enabled
@@ -37,7 +38,16 @@ def reconcile_once(store,site):
             task=row['request']['task']
             code_sha=descriptors[task['engine_id']].code_sha256
             if (row['evidence'].get('collection_state')=='COLLECTED'
-                    and row['evidence'].get('collection_plugin_sha256')==code_sha):continue
+                    and row['evidence'].get('collection_plugin_sha256')==code_sha):
+                manifest=reader.get_manifest(row['run_id'],row['evidence']['collection_id'],
+                    CallContext(
+                        row['owner'],site.site_id,frozenset({'results:read'})))
+                states={r['state'] for r in manifest['publication_receipts']}
+                publication='PUBLISHED' if 'PUBLISHED' in states else 'PUBLISH_UNKNOWN' if states else 'NOT_REQUESTED'
+                if row['evidence'].get('publication_state','NOT_REQUESTED')!=publication:
+                    store.update_state(reservation.reservation_id,row['execution_state'],{**row['evidence'],'publication_state':publication})
+                    updated.append(row['run_id'])
+                continue
             snapshot=snapshot_outputs(receipt.handle,site)
             task=row['request']['task']
             report=EngineProxy(PluginHost(site),task['engine_id']).parse(snapshot,task['expected_results'])

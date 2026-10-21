@@ -54,3 +54,9 @@ Evidence: **24 provider protocol tests passed**; three separately installed opti
 Private SQLite client sessions bind an authenticated site/principal, explicit human request ID, validated task and one durable submission key. Unknown dispatches resume the saved batch; provider switches retain the same calculation intent. Explicit reruns reference an existing run. Chat budgets do not cancel computation or change its walltime.
 
 Evidence: **34 client/cross-provider tests passed** on macOS and isolated Linux, including real broker idempotency with a test executor, parallel key reservations, lost dispatch and provider-switch retries. Minimal-core macOS full suite **197 passed, 22 explicit skips**. All provider responses were synthetic; API calls remain zero.
+
+## C5 — immutable publication mechanisms
+
+Operator-only publishers verify all derived/raw files, export directories, preserve unknown GitHub writes, forbid force updates and serialize first-publication reservations. Actions archives have deterministic tar hashes plus separately checked Artifact ZIP digests. API readback loss retains upload identity; expiry/renewal appends references without changing numerical collections. Six chat tools remain unchanged.
+
+Evidence: macOS complete suite **213 passed, 23 skipped** (17 Linux + 5 MCP SDK + 1 HTTPX serializer); isolated Linux full suite **230 passed, 6 optional skips** (310.94 s). The real HTTPX serializer test passed separately in a fresh GitHub-extra environment. All GitHub/Artifact services were simulated; no remote writes/uploads occurred.

@@ -1,0 +1,51 @@
+# Operator-only template. Configure the protected environment, paths and targets first.
+name: Publish an immutable QC collection
+on:
+  workflow_dispatch:
+    inputs:
+      collection-root:
+        description: Existing authorized collection directory within the configured site root
+        required: true
+permissions:
+  actions: read
+  contents: write
+concurrency:
+  group: publish-${{ inputs.collection-root }}
+  cancel-in-progress: false
+jobs:
+  publish:
+    environment: example-result-publication
+    runs-on: [self-hosted, example-publication-gateway]
+    env:
+      CHC_PYTHON: /example/gateway/venv/bin/python
+      CHC_SITE: /example/private/site.toml
+      CHC_COLLECTION: ${{ inputs.collection-root }}
+      CHC_PUBLICATION_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Stage a verified archive with the installed package
+        id: stage
+        shell: bash
+        run: |
+          "$CHC_PYTHON" -I -m chat_hpc_control.cli --site "$CHC_SITE" publication stage --target raw-artifacts --collection-root "$CHC_COLLECTION"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # official v4, verified 2026-10-22
+        id: raw
+        with:
+          name: ${{ steps.stage.outputs.artifact_name }}
+          path: ${{ steps.stage.outputs.archive_path }}
+          if-no-files-found: error
+          overwrite: false
+          retention-days: 30
+      - name: Verify upload identity and append a receipt
+        shell: bash
+        env:
+          CHC_ARTIFACT_ID: ${{ steps.raw.outputs.artifact-id }}
+          CHC_ARTIFACT_DIGEST: ${{ steps.raw.outputs.artifact-digest }}
+          CHC_ARTIFACT_URL: ${{ steps.raw.outputs.artifact-url }}
+          CHC_ARCHIVE_SHA256: ${{ steps.stage.outputs.archive_sha256 }}
+        run: |
+          "$CHC_PYTHON" -I -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"chc-upload.json"; p.write_text(json.dumps({"artifact_id":int(os.environ["CHC_ARTIFACT_ID"]),"artifact_digest":os.environ["CHC_ARTIFACT_DIGEST"],"artifact_url":os.environ["CHC_ARTIFACT_URL"],"archive_sha256":os.environ["CHC_ARCHIVE_SHA256"]}))'
+          "$CHC_PYTHON" -I -m chat_hpc_control.cli --site "$CHC_SITE" publication record-upload --target raw-artifacts --collection-root "$CHC_COLLECTION" --upload-result "$RUNNER_TEMP/chc-upload.json"
+      - name: Publish numerical files at a fixed commit
+        shell: bash
+        run: |
+          "$CHC_PYTHON" -I -m chat_hpc_control.cli --site "$CHC_SITE" publication publish --target results-commit --collection-root "$CHC_COLLECTION"

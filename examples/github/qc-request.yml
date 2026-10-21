@@ -21,3 +21,4 @@ jobs:
           site-config: /example/private/site.toml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+# Publication is separate: see publish-results.yml. Do not add write credentials here.
