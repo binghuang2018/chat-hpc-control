@@ -16,8 +16,9 @@ the native worker environment.
 
 No default model IDs are embedded. Users choose a model, credentials and API
 budget explicitly when connecting a client. Library construction and import do
-not make a model request. Tests create clients with unmistakably synthetic keys
-and forbid socket connections.
+not make a model request. Tests create clients with unmistakably synthetic keys, an empty HOME,
+and forbid DNS/socket connections. A real Google SDK HTTPX mock test also verifies
+that one failed request produces no hidden retry; no remote request is made.
 
 OpenAI tools explicitly use `strict: false`: the full TaskSpec includes extensible
 plugin options and does not satisfy the closed-object strict-mode restrictions.

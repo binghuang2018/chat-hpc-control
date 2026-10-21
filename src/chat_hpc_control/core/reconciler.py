@@ -36,9 +36,10 @@ def reconcile_once(store,site):
                 row=store.get_run(row['run_id'])
             if row['execution_state'] not in TERMINAL:continue
             task=row['request']['task']
-            code_sha=descriptors[task['engine_id']].code_sha256
+            descriptor=descriptors.get(task['engine_id'])
+            code_sha=descriptor.code_sha256 if descriptor else None
             if (row['evidence'].get('collection_state')=='COLLECTED'
-                    and row['evidence'].get('collection_plugin_sha256')==code_sha):
+                    and (code_sha is None or row['evidence'].get('collection_plugin_sha256')==code_sha)):
                 manifest=reader.get_manifest(row['run_id'],row['evidence']['collection_id'],
                     CallContext(
                         row['owner'],site.site_id,frozenset({'results:read'})))
@@ -48,6 +49,8 @@ def reconcile_once(store,site):
                     store.update_state(reservation.reservation_id,row['execution_state'],{**row['evidence'],'publication_state':publication})
                     updated.append(row['run_id'])
                 continue
+            if descriptor is None:
+                raise ControlError('CAPABILITY_UNSUPPORTED','historical engine is disabled; existing collections remain readable')
             snapshot=snapshot_outputs(receipt.handle,site)
             task=row['request']['task']
             report=EngineProxy(PluginHost(site),task['engine_id']).parse(snapshot,task['expected_results'])

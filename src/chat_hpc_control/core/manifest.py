@@ -43,12 +43,33 @@ def canonical_bytes(value: JsonObject) -> bytes:
                       sort_keys=True, separators=(",", ":")).encode("utf-8")
 
 
+def runtime_files(runtime) -> list[dict]:
+    paths=[runtime.executable]
+    if runtime.mpi_argv:paths.append(runtime.mpi_argv[0])
+    extra=runtime.options.get('fingerprint_paths',[])
+    if not isinstance(extra,list) or len(extra)>128 or not all(isinstance(p,str) for p in extra):
+        raise ControlError('SCHEMA_INVALID','runtime fingerprint_paths must be a bounded absolute file list')
+    paths.extend(extra);records=[]
+    for name in sorted(set(paths)):
+        path=Path(name)
+        try:
+            if not path.is_absolute() or not path.is_file():raise ValueError('not an absolute regular file')
+            resolved=path.resolve(strict=True)
+            with resolved.open('rb') as stream:digest=hashlib.file_digest(stream,'sha256').hexdigest()
+            records.append({'declared':str(path),'resolved':str(resolved),'size':resolved.stat().st_size,'sha256':digest})
+        except (OSError,ValueError) as exc:
+            raise ControlError('SCHEMA_INVALID','native runtime fingerprint file is unavailable') from exc
+    return records
+
+
 def build_manifest(task: ResolvedTask, plugin: PluginInfo, probe: ProbeReport, site: SiteConfig) -> JsonObject:
     runtime = site.engines.get(task.task.engine_id)
     runtime_identity = {}
     if runtime:
         runtime_identity = {"executable": runtime.executable, "mpi_argv": list(runtime.mpi_argv),
-                            "environment_sha256": hashlib.sha256(canonical_bytes(runtime.environment)).hexdigest()}
+                            "environment_sha256": hashlib.sha256(canonical_bytes(runtime.environment)).hexdigest(),
+                            "options_sha256": hashlib.sha256(canonical_bytes(runtime.options)).hexdigest(),
+                            "tracked_files": runtime_files(runtime)}
     executor_runtime = {}
     if site.executor.kind == "task-spooler" and site.executor.options.get("executable"):
         binary = Path(site.executor.options["executable"]).resolve()

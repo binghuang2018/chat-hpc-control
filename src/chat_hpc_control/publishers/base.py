@@ -29,7 +29,7 @@ def payload(collection,snapshot_store=None,*,include_raw=True):
             snap=OutputSnapshot(root,documents['raw-manifest.json']['files'],provenance['manifest_sha256'],provenance['terminal'])
             identity={'files':snap.files,'terminal':snap.terminal,'manifest_sha256':snap.manifest_sha256}
             if hashlib.sha256(result_bytes(identity)).hexdigest()!=digest:raise ValueError('snapshot binding')
-            for row in snap.files:data['raw/'+row['path']]=read(snap,row['path'])
+            for row in snap.files:data['raw/'+row['path']]=read(snap,row['path'],max_bytes=row['size'])
         return data
     except (OSError,ValueError,KeyError,TypeError) as exc:
         raise ControlError('RESULT_UNVERIFIED','collection or raw evidence could not be verified for publication') from exc

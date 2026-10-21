@@ -129,3 +129,14 @@ try:
  assert not executor.socket_path.exists(),"read restarted a queue"
 finally: stop_queue(service)
 ''')
+
+
+def test_ts_worker_provisions_private_home_and_temporary_directory(plugin_environment):
+    plugin_environment("TSP_BINARY=" + repr(TSP) + "\n" + TS_HELPERS + '''
+service,request,context=make_ts('ts-private-dirs',"import os;from pathlib import Path;assert Path(os.environ['HOME']).is_dir();assert Path(os.environ['TMPDIR']).is_dir();print('private-dirs-ready')")
+try:
+ receipt=service.broker.submit(request,context)
+ observed=terminal(service.broker.executor,receipt.handle)
+ assert observed.execution_state=='COMPLETED',observed
+finally:stop_queue(service)
+''')

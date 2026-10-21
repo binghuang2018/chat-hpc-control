@@ -33,6 +33,9 @@ def test_exact_six_tools_and_scope_context(github_case):
                 expected=next(t for t in tool_definitions() if t['name']==tool.name)
                 assert tool.input_schema==expected['inputSchema']
                 assert tool.annotations.read_only_hint==expected['readOnlyHint']
+                if tool.name=='submit_task':
+                    assert tool.annotations.destructive_hint is True
+                    assert tool.annotations.open_world_hint is True
             result=await client.call_tool('get_task_status',{'site_id':site.site_id,'run_id':'test'})
             assert result.structured_content['ok']
             bad=await client.call_tool('get_task_status',{'site_id':site.site_id,'run_id':'test','principal':'mallory'})

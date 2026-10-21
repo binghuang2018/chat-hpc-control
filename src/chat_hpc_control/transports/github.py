@@ -29,6 +29,8 @@ def _issue_context(event,fetched_issue,site):
                 or type(fetched_issue['user']['id'])!=int or fetched_issue['user']['id']<=0
                 or type(event['sender']['id'])!=int or event['sender']['id']<=0
                 or fetched_issue['user']['id']!=event['issue']['user']['id']
+                or fetched_issue['body']!=event['issue']['body']
+                or not any(label['name']=='qc-request' for label in event['issue']['labels'])
                 or not any(label['name']=='qc-request' for label in fetched_issue['labels'])):raise ValueError('event binding')
         users=settings['github_principals']
         author=users[str(fetched_issue['user']['id'])];actor=users[str(event['sender']['id'])]

@@ -50,7 +50,7 @@ class NativeEngine:
             argv=(runtime.executable,entry)
             identity={'normal_termination':{'file':'stdout.log','marker':'ORCA TERMINATED NORMALLY'}}
         else:
-            argv=(*runtime.mpi_argv,runtime.executable,'-n',str(task.task.resources.cpus),'-d',str(work/'scratch'),'-o',str(work/'molpro.out'),entry)
+            argv=(*runtime.mpi_argv,runtime.executable,'-n',str(task.task.resources.cpus),'-d',str(context.run_root/'scratch'),'-o',str(work/'molpro.out'),entry)
             identity={'normal_termination':{'file':'molpro.out','marker':'Molpro calculation terminated'}}
         return ExecutionPlan(argv,work,runtime.environment,('*',),task.task.resources,self.name,identity)
 

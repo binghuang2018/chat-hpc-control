@@ -61,8 +61,8 @@ def create_mcp_server(service,auth):
     class BrokerMCP(MCPServer):
         async def list_tools(self):
             return [Tool(name=t['name'],description=t['description'],input_schema=t['inputSchema'],
-                annotations=ToolAnnotations(read_only_hint=t['readOnlyHint'],destructive_hint=False,
-                                            idempotent_hint=True,open_world_hint=False)) for t in definitions.values()]
+                annotations=ToolAnnotations(read_only_hint=t['readOnlyHint'],destructive_hint=t['name']=='submit_task',
+                                            idempotent_hint=True,open_world_hint=t['name']=='submit_task')) for t in definitions.values()]
 
         async def call_tool(self,name,arguments,context=None):
             try:

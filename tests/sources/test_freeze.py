@@ -121,3 +121,22 @@ def test_git_ref_option_and_symlink_rejected(site, tmp_path):
     reader = source_api("git").GitCliReader({"allowed": str(tmp_path)})
     with pytest.raises(ControlError, match="SCHEMA_INVALID"):
         reader.resolve_ref("allowed", "--help")
+
+
+@pytest.mark.parametrize('limits,expected_reads',[
+    ({'max_input_files':1,'max_input_bytes':100},0),
+    ({'max_input_files':10,'max_input_bytes':5},2),
+])
+def test_git_source_checks_count_upfront_and_bytes_incrementally(site,sample_task,limits,expected_reads):
+    from dataclasses import replace
+    calls=[]
+    class Reader:
+        def resolve_ref(self,*_):return 'a'*40
+        def read_blob(self,repository,commit,path):
+            calls.append(path);raw=b'1234'
+            return hashlib.sha1(b'blob 4\0'+raw).hexdigest(),raw
+    task={**sample_task,'source':{'kind':'git','repository':'example/repo','ref':'main','files':['job.py','b','c','d']}}
+    config=replace(site,limits=limits,repositories={'example/repo':{}})
+    with pytest.raises(ControlError,match='SCHEMA_INVALID'):
+        source_api('base').SourceResolver(Reader()).resolve(parse_task(json.dumps(task).encode()),config)
+    assert len(calls)==expected_reads

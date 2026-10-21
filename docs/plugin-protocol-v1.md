@@ -201,3 +201,15 @@ QC 软件版本通过运行时探测固定；不承诺上述 profile 覆盖每�
 - [PyPA：创建与发现插件](https://packaging.python.org/en/latest/guides/creating-and-discovering-plugins/)：entry point 机制。查阅日期：2026-10-21。
 - [架构说明](superpowers/specs/2026-10-21-chat-hpc-control-v0.1-design.md)：模块边界与范围。
 - [聊天接入](chat-integrations.md)：公共工具与客户端约束。
+
+## v0.1 implementation qualification: installed distribution identity
+
+For conservative code provenance, `PluginInfo.code_sha256` is the verified whole
+installed distribution digest. A parser-only package update can therefore change
+**new validation manifests** too. v0.1 does not promise an unchanged manifest
+across a parser-only distribution update. Existing intent-key retries return their
+original receipt without re-execution; a terminal run may be reparsed into a new
+immutable collection without resubmitting native work. This is narrower than the
+original design's independent execution/parser package identity. A future protocol
+may expose distinct execution and parser distribution attestations; v0.1 does not
+silently infer that arbitrary third-party parser modules cannot affect execution.

@@ -40,3 +40,15 @@ def test_reject_untrusted_event(github_case,mutation):
     if mutation=='label':issue['labels']=[]
     if mutation=='body':issue['body']+='\nnot json'
     with pytest.raises(Exception):api().parse_issue(event,issue,site)
+
+
+def test_stale_authorized_event_cannot_authorize_a_later_body(github_case):
+    event,issue,site=github_case
+    payload=json.loads(issue['body'].split('-->',1)[1]);payload['task']['resources']['cpus']=8
+    issue['body']='<!-- CHAT_HPC_CONTROL_REQUEST_V1 -->\n'+json.dumps(payload)
+    with pytest.raises(Exception,match='AUTH_DENIED'):api().parse_issue(event,issue,site)
+
+
+def test_request_label_must_exist_in_authenticated_event(github_case):
+    event,issue,site=github_case;event['issue']['labels']=[]
+    with pytest.raises(Exception,match='AUTH_DENIED'):api().parse_issue(event,issue,site)

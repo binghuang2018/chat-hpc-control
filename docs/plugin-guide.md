@@ -43,6 +43,8 @@ boundary, not an OS sandbox against administrator-installed code.
   credentials or publication destinations in `engine_options`.
 - Work under `context.run_root / "work"`; frozen inputs are copied there by the
   installed native worker. Do not mutate the immutable input snapshot.
+- Declare exact relative output files, or `"*"` for all bounded regular work files.
+  Undeclared regular outputs are not exported; symlinks/special files are rejected.
 - Preserve the exact `task.resources`. Report resource capability honestly.
 - Declare normal-termination evidence when the program requires more than exit 0.
 - Start with `raw-only` if numerical ownership/units/method/state cannot be proved.

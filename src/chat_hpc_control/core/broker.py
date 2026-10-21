@@ -92,6 +92,10 @@ class Broker:
             try:
                 plan = self.engines[request.task.engine_id].prepare(
                     frozen, PrepareContext(self.site, run_root, self.site.engines[request.task.engine_id]))
+                from ..sources.base import checked_paths
+                checked_paths([name for name in plan.outputs if name != "*"])
+                if plan.engine_id != request.task.engine_id:
+                    raise ControlError("SCHEMA_INVALID", "engine returned an unrelated execution plan")
                 runtime = self.site.engines[request.task.engine_id]
                 trusted_executables = {Path(runtime.executable).resolve()}
                 if runtime.mpi_argv and Path(runtime.mpi_argv[0]).is_absolute():

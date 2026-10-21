@@ -62,6 +62,14 @@ def load_site(path: Path) -> SiteConfig:
             if key in runtime and (not isinstance(runtime[key], list)
                                     or not all(isinstance(a, str) and "\x00" not in a for a in runtime[key])):
                 _invalid("runtime argv must be a string list")
+        options = runtime.get("options", {})
+        if not isinstance(options, dict):_invalid("runtime options must be an explicit JSON object")
+        from ..contracts.codec import check_json_tree
+        check_json_tree(options, allow_float=False)
+        if runtime.get("mpi_argv"):
+            mpi = Path(runtime["mpi_argv"][0])
+            if not mpi.is_absolute() or not mpi.is_file() or not os.access(mpi, os.X_OK):
+                _invalid("MPI launcher must exist at an absolute executable path")
         runtimes[engine] = RuntimeConfig(str(executable), tuple(runtime.get("version_args", ["--version"])),
                                          environment, tuple(runtime.get("mpi_argv", [])), runtime.get("options", {}))
     local = {}

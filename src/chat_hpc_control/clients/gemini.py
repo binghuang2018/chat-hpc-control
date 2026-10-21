@@ -28,7 +28,13 @@ class GeminiAdapter(NativeClient):
         # The calculation intent remains durable even if a request is uncertain.
         except ImportError as exc:raise ControlError('CAPABILITY_UNSUPPORTED','install chat-hpc-control[gemini]') from exc
         if not api_key:raise ControlError('AUTH_DENIED','explicit Gemini API key is required')
-        self.client=genai.Client(api_key=api_key,http_options={"retry_options":{"attempts":1}});return self
+        # google-genai 2.32 initializes its older transport by mutating zero to
+        # one. Interactions interprets the same public option as retries rather
+        # than total attempts. Restore zero before its lazy resource is built.
+        retry=genai.types.HttpRetryOptions(attempts=0)
+        self.client=genai.Client(api_key=api_key,vertexai=False,http_options={"retry_options":retry})
+        retry.attempts=0
+        return self
 
     def request(self,input_items,*,previous_id=None):
         self._configured()

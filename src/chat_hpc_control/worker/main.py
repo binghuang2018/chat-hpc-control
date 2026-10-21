@@ -87,11 +87,17 @@ def main(argv=None):
     state, reason, exit_code = "FAILED", "WORKER_ERROR", None
     affinity = []
     try:
+        for name in ("home", "tmp", "scratch"):
+            directory = root / name
+            if directory.is_symlink():raise ValueError("linked private worker directory")
+            directory.mkdir(mode=0o700, exist_ok=True)
         manifest = validate_approval(approved)
         slot_fd = _slot(Path(launch["queue_root"]), launch["max_concurrent"], cancelled)
         if slot_fd is None:
             state, reason = "CANCELLED", "CANCELLED_BEFORE_START"
         else:
+            # A local queue wait can outlive a runtime/environment update.
+            manifest = validate_approval(approved)
             work = approved.plan.cwd
             work.mkdir(mode=0o700, parents=True, exist_ok=True)
             for record in manifest["files"]:
@@ -113,6 +119,7 @@ def main(argv=None):
             def initial_affinity():
                 os.sched_setaffinity(0, affinity)
             with (root / "stdout.log").open("wb") as stdout, (root / "stderr.log").open("wb") as stderr:
+                validate_approval(approved)
                 program = subprocess.Popen(approved.plan.argv, cwd=work, env=environment,
                                            stdin=subprocess.DEVNULL, stdout=stdout, stderr=stderr,
                                            close_fds=True, start_new_session=True, preexec_fn=initial_affinity)

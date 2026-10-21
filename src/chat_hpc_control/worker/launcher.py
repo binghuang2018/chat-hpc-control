@@ -38,6 +38,11 @@ def validate_approval(approved: ApprovedExecutionPlan):
     executable = Path(runtime["executable"])
     if digest_file(executable.resolve()) != manifest["program"]["identity"].get("program_sha256"):
         raise ControlError("INPUT_CHANGED", "configured native executable changed")
+    for record in runtime.get("tracked_files", []):
+        path = Path(record["declared"])
+        if (path.resolve() != Path(record["resolved"]) or path.stat().st_size != record["size"]
+                or digest_file(path.resolve()) != record["sha256"]):
+            raise ControlError("INPUT_CHANGED", "native runtime or MPI fingerprint changed")
     trusted = {executable.resolve()}
     if runtime.get("mpi_argv") and Path(runtime["mpi_argv"][0]).is_absolute():
         trusted.add(Path(runtime["mpi_argv"][0]).resolve())

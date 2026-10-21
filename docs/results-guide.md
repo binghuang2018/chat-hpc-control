@@ -73,3 +73,9 @@ A terminal run may still have `collection_state: PENDING` or `UNVERIFIED`.
 A local path is not a remote download URL. Use fixed Git commits or authorized
 Artifact references; check access permissions and expiry. Renewal changes
 availability receipts, not numerical completeness or scientific acceptance.
+
+Numerical parser reads are bounded to 64 MiB per input file. Raw publication uses
+the already-verified snapshot inventory sizes instead of that parser limit, so a
+larger raw file within the site's configured snapshot budget can still be exported.
+This version constructs publication payloads in memory; set site byte budgets for
+the gateway's available memory. It is not an unlimited streaming data service.

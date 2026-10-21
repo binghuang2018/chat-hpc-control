@@ -49,7 +49,11 @@ publication; never put API/private control credentials in a runtime environment.
   validation. v0.1 has no real Molpro/MPI deployment guarantee.
 
 Runtime manifests record configured executables, versions, environment identity,
-control/plugin code and interpreter/dependency identity. Preserve the installed
+control/plugin code and interpreter/dependency identity. Configured MPI binaries and
+optional `engines.NAME.options.fingerprint_paths` (absolute regular files) are
+hashed and rechecked before native start; runtime options contribute a private
+configuration digest. For Python/wrapper runtimes, track relevant package/shared
+library files or use an immutable environment. This is not a hermetic OS image. Preserve the installed
 runtime for queued/running jobs; changing it cannot silently execute a frozen task
 under a different identity. Keep original runtime provenance for old results.
 
@@ -64,7 +68,8 @@ Use an external scheduler/supervisor/resource boundary when hard guarantees matt
 terminates the native process group at that explicitly requested limit. If an
 operator sets `max_walltime_seconds`, unlimited requests are rejected rather than
 clamped. Plugin/RPC/client control waits do not become calculation timeouts.
-Input/output byte/file budgets are explicit. Snapshot limits are not disk quotas.
+Input/output byte/file budgets are explicit. Snapshot limits are not disk quotas. Workers provision private HOME/TMPDIR/scratch;
+Molpro scratch is outside the exported work directory.
 
 For Task Spooler set `kind="task-spooler"`, an absolute `executable`, a dedicated
 short `socket_path` inside the site root and capacity options. The instance binds

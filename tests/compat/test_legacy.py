@@ -73,6 +73,7 @@ def test_old_issue_only_returns_mapping(github_case,tmp_path):
     from chat_hpc_control.transports.github import GitHubGateway
     event,issue,site=github_case;root,index=make_snapshot(tmp_path/'offline')
     issue['body']='<!-- CHATGPT_QC_REQUEST_V1 -->\n{"version":1,"kind":"molpro","task_id":"synthetic-old-h2"}'
+    event['issue']['body']=issue['body']  # authenticated event for this exact legacy request
     site=replace(site,settings={**site.settings,'legacy_snapshot':str(root)})
     def dispatch(*args):pytest.fail('legacy request reached new broker submission')
     response=GitHubGateway(site,lambda n:issue,dispatch).dispatch(event)

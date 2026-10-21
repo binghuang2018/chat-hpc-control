@@ -64,3 +64,24 @@ def test_control_runtime_upgrade_changes_execution_identity(sample_task, tmp_pat
     monkeypatch.setattr(m, "execution_identity", lambda: {"version": "0.1.0", "code_sha256": "b" * 64})
     new = m.build_manifest(task, plugin, probe, site)
     assert old != new
+
+
+def test_native_runtime_options_mpi_and_extra_files_are_fingerprinted(sample_task,tmp_path):
+    from dataclasses import replace
+    import sys
+    from chat_hpc_control.contracts.config import RuntimeConfig
+    resolved=ResolvedTask(parse_task(json.dumps(sample_task).encode()),{'job.py':b'print(1)'},{'kind':'bundle'})
+    extra=tmp_path/'basis.dat';extra.write_text('synthetic-version-one')
+    mpi=tmp_path/'mpi';mpi.write_text('#!/bin/sh\nexit 0\n');mpi.chmod(0o700)
+    runtime=RuntimeConfig(sys.executable,mpi_argv=(str(mpi),),options={'fingerprint_paths':[str(extra)],'native_mode':'one'})
+    site=SiteConfig('example-site',tmp_path/'site',{}, {'pyscf':runtime},ExecutorConfig('local','local'))
+    info=PluginInfo('pyscf','example-engine','1','a'*64);probe=ProbeReport(True,'1',{'program_sha256':'b'*64})
+    first=api().build_manifest(resolved,info,probe,site)
+    extra.write_text('synthetic-version-two')
+    second=api().build_manifest(resolved,info,probe,site)
+    assert second!=first,'additional native runtime bytes are omitted'
+    mpi.write_text('#!/bin/sh\nexit 1\n')
+    third=api().build_manifest(resolved,info,probe,site)
+    assert third!=second,'MPI executable bytes are omitted'
+    altered=replace(site,engines={'pyscf':replace(runtime,options={**runtime.options,'native_mode':'two'})})
+    assert api().build_manifest(resolved,info,probe,altered)!=third,'native runtime options are omitted'

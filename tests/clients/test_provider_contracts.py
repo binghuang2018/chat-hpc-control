@@ -76,3 +76,13 @@ def test_continuation_preserves_provider_metadata(name):
 def test_gemini_final_model_output():
     raw={'id':'synthetic','status':'completed','steps':[{'type':'model_output','content':[{'type':'text','text':'done'}]}]}
     assert adapter('gemini').final_text(raw)=='done'
+
+
+def test_gemini_direct_api_does_not_select_ambient_vertex_credentials(monkeypatch):
+    import types
+    captured={}
+    def client(**kwargs):captured.update(kwargs);return object()
+    monkeypatch.setitem(sys.modules,'google',types.SimpleNamespace(genai=types.SimpleNamespace(Client=client,types=types.SimpleNamespace(HttpRetryOptions=lambda **kw:types.SimpleNamespace(**kw)))))
+    adapter('gemini').connect('synthetic-explicit-key')
+    assert captured.get('vertexai') is False
+    assert captured['http_options']['retry_options'].attempts==0

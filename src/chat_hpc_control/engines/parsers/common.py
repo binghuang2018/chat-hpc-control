@@ -4,7 +4,7 @@ import hashlib
 from pathlib import Path
 from ...contracts.codec import decode_json
 from ...contracts.results import ParseReport
-from ...sources.base import checked_paths
+from ...sources.base import checked_paths,read_limited
 
 
 def identity(profile):
@@ -14,15 +14,15 @@ def identity(profile):
             'geometry_tolerance_bohr':'0.00001','angstrom_per_bohr':'0.529177210903'}
 
 
-def read(snapshot,name):
+def read(snapshot,name,*,max_bytes=64*1024*1024):
     checked_paths([name])
     path=snapshot.root/name
     record=next((r for r in snapshot.files if r['path']==name),None)
-    if record is None or path.is_symlink() or not path.resolve().is_relative_to(snapshot.root.resolve()):
+    if record is None or snapshot.root.is_symlink() or path.is_symlink() or not path.resolve().is_relative_to(snapshot.root.resolve()):
         raise ValueError('file absent from immutable inventory')
-    if path.stat().st_size>64*1024*1024 or path.stat().st_size!=record['size']:
+    if path.stat().st_size>max_bytes or path.stat().st_size!=record['size']:
         raise ValueError('file size differs from inventory')
-    raw=path.read_bytes()
+    raw=read_limited(path,record["size"],code="RESULT_UNVERIFIED")
     if hashlib.sha256(raw).hexdigest()!=record['sha256']:
         raise ValueError('file hash differs from inventory')
     return raw
