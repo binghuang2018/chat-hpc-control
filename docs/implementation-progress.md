@@ -42,3 +42,9 @@ Evidence: macOS complete suite **161 passed, 17 Linux-only skipped**; isolated L
 MCP SDK 2.3.0 exposes exactly the shared six schemas. Stdio derives local OS identity; loopback HTTP uses private expiring opaque bearer digests and stateless per-request context. Remote deployment needs a configured TLS gateway. No OAuth server or universal web-product compatibility is claimed.
 
 Evidence: actual SDK in-memory/ASGI tests **7 passed**; minimal-core macOS full suite **163 passed, 22 skipped** (17 Linux and 5 optional SDK tests, the latter executed separately). No model account, external server or paid API call.
+
+## C3 — optional provider adapters
+
+OpenAI Responses, Anthropic Messages and Gemini Interactions retain the same schemas and correlate results using the original provider call ID. They reject partial/invalid calls and preserve continuation metadata. SDKs are imported only on explicit connection; models are explicitly chosen.
+
+Evidence: **24 provider protocol tests passed**; three separately installed optional environments imported/constructed SDK clients with sockets forbidden: OpenAI 3.36.0, Anthropic 1.17.0, Google GenAI 2.32.0. API calls: **0**. Minimal-core macOS full suite **187 passed, 22 explicit skips**.

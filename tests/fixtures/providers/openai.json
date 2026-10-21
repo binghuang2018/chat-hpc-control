@@ -1,0 +1,1 @@
+{"id":"resp_synthetic","status":"completed","output":[{"type":"reasoning","id":"rs_synthetic","summary":[]},{"type":"function_call","id":"fc_synthetic","call_id":"call_synthetic","name":"get_task_status","arguments":"{\"site_id\":\"example\",\"run_id\":\"run-1\"}","status":"completed"}]}

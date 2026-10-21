@@ -1,0 +1,1 @@
+{"id":"msg_synthetic","type":"message","role":"assistant","stop_reason":"tool_use","content":[{"type":"thinking","thinking":"synthetic placeholder","signature":"synthetic-signature"},{"type":"tool_use","id":"toolu_synthetic","name":"get_task_status","input":{"site_id":"example","run_id":"run-1"}}]}

@@ -10,6 +10,13 @@ readme = "README.md"
 requires-python = ">=3.11,<3.14"
 dependencies = ["jsonschema>=4.26.0,<5"]
 
+[project.optional-dependencies]
+github = ["httpx>=0.28.1,<0.29"]
+mcp = ["mcp>=2.3,<3"]
+openai = ["openai>=3.35.1,<4"]
+anthropic = ["anthropic>=1.17,<2"]
+gemini = ["google-genai>=2.32,<3"]
+
 [project.scripts]
 chat-hpc-control = "chat_hpc_control.cli:main"
 

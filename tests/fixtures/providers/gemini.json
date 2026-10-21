@@ -1,0 +1,1 @@
+{"id":"interaction_synthetic","status":"requires_action","steps":[{"type":"thought","signature":"synthetic-signature"},{"type":"function_call","id":"call_synthetic","name":"get_task_status","arguments":{"site_id":"example","run_id":"run-1"}}]}
