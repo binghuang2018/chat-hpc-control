@@ -17,7 +17,7 @@ from ..worker.receipt import write_once
 MARKER='<!-- CHAT_HPC_CONTROL_REQUEST_V1 -->'
 
 
-def parse_issue(event,fetched_issue,site):
+def _issue_context(event,fetched_issue,site):
     try:
         settings=site.settings;repository=settings['github_repository']
         if (event.get('action') not in {'opened','edited','labeled','reopened'}
@@ -32,18 +32,27 @@ def parse_issue(event,fetched_issue,site):
                 or not any(label['name']=='qc-request' for label in fetched_issue['labels'])):raise ValueError('event binding')
         users=settings['github_principals']
         author=users[str(fetched_issue['user']['id'])];actor=users[str(event['sender']['id'])]
+        scopes=sorted(set(site.principals[author]['scopes'])&set(site.principals[actor]['scopes']))
+        identity={'principal':author,'author':author,'actor':actor,'transport':'github','site_id':site.site_id,'scopes':scopes}
+        context=context_from_peer(PeerIdentity(site.gateway_uids[0],0,0),{'context':identity},site)
+        return context
+    except (KeyError,IndexError,TypeError,ValueError) as exc:
+        raise ControlError('AUTH_DENIED','GitHub event, fetched Issue, or stable user identity was rejected') from exc
+
+
+def parse_issue(event,fetched_issue,site):
+    context=_issue_context(event,fetched_issue,site)
+    try:
         body=fetched_issue['body']
         if not isinstance(body,str) or not body.startswith(MARKER) or body.count(MARKER)!=1:raise ValueError('marker')
         payload=decode_json(body[len(MARKER):].strip().encode())
         if set(payload)!={'version','task'} or type(payload['version'])!=int or payload['version']!=1:raise ValueError('envelope')
         task=parse_task(json.dumps(payload['task']).encode())
-        if task.source['kind']=='git' and task.source['repository']!='https://github.com/'+repository:raise ValueError('task repository')
-        scopes=sorted(set(site.principals[author]['scopes'])&set(site.principals[actor]['scopes']))
-        identity={'principal':author,'author':author,'actor':actor,'transport':'github','site_id':site.site_id,'scopes':scopes}
-        context=context_from_peer(PeerIdentity(site.gateway_uids[0],0,0),{'context':identity},site)
+        if task.source['kind']=='git' and task.source['repository']!='https://github.com/'+site.settings['github_repository']:
+            raise ValueError('task repository')
         return ToolCall('validate_task',{'site_id':site.site_id,'task':task.to_dict()}),context
     except (KeyError,IndexError,TypeError,ValueError) as exc:
-        raise ControlError('AUTH_DENIED','GitHub event, fetched Issue, or stable user identity was rejected') from exc
+        raise ControlError('AUTH_DENIED','GitHub request body was rejected') from exc
 
 
 class GitHubGateway:
@@ -54,6 +63,16 @@ class GitHubGateway:
         number=event.get('issue',{}).get('number')
         if type(number)!=int or number<=0:raise ControlError('AUTH_DENIED','not a bound Issue event')
         issue=self.fetch_issue(number)
+        from ..compat.legacy import LEGACY_MARKER,inspect_legacy,resolve_legacy_issue
+        if isinstance(issue.get('body'),str) and issue['body'].startswith(LEGACY_MARKER):
+            from ..core.auth import authorize
+            from ..contracts.results import CompatibilityReport
+            from ..contracts.tools import ToolResponse
+            import uuid
+            context=_issue_context(event,issue,self.site);authorize(context,'tasks:read',None)
+            configured=self.site.settings.get('legacy_snapshot')
+            report=inspect_legacy(Path(configured)) if configured else CompatibilityReport([], [{'code':'LEGACY_SNAPSHOT_NOT_CONFIGURED'}])
+            return ToolResponse(str(uuid.uuid4()),True,resolve_legacy_issue(issue,report))
         call,context=parse_issue(event,issue,self.site)
         repository=self.site.settings['github_repository']
         intent_path=self.site.root/'gateway-intents'/('github-'+str(self.site.settings['github_repository_id'])+'-'+str(number)+'.json')

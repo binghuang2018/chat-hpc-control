@@ -16,6 +16,8 @@ def _parser():
     parser.add_argument("--site", type=Path, help="explicit private site TOML")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("capabilities")
+    legacy = commands.add_parser("legacy")
+    legacy.add_argument("--snapshot", type=Path, required=True)
     publication = commands.add_parser("publication")
     publication.add_argument("operation", choices=["publish", "stage", "record-upload"])
     publication.add_argument("--target", required=True)
@@ -51,7 +53,11 @@ def _parser():
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
-        if args.command == "validate" and args.schema_only:
+        if args.command == "legacy":
+            from dataclasses import asdict
+            from .compat.legacy import inspect_legacy
+            response = ToolResponse(str(uuid.uuid4()), True, data=asdict(inspect_legacy(args.snapshot)))
+        elif args.command == "validate" and args.schema_only:
             task = parse_task(args.task.read_bytes())
             response = ToolResponse(str(uuid.uuid4()), True, data={
                 "valid": True, "validation_level": "SCHEMA_ONLY", "task": task.to_dict()})

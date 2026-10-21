@@ -60,3 +60,9 @@ Evidence: **34 client/cross-provider tests passed** on macOS and isolated Linux,
 Operator-only publishers verify all derived/raw files, export directories, preserve unknown GitHub writes, forbid force updates and serialize first-publication reservations. Actions archives have deterministic tar hashes plus separately checked Artifact ZIP digests. API readback loss retains upload identity; expiry/renewal appends references without changing numerical collections. Six chat tools remain unchanged.
 
 Evidence: macOS complete suite **213 passed, 23 skipped** (17 Linux + 5 MCP SDK + 1 HTTPX serializer); isolated Linux full suite **230 passed, 6 optional skips** (310.94 s). The real HTTPX serializer test passed separately in a fresh GitHub-extra environment. All GitHub/Artifact services were simulated; no remote writes/uploads occurred.
+
+## D1 — read-only legacy compatibility and rights inventory
+
+The offline inspector preserves original bytes, canonicalization algorithm and claimed digest. Authenticated old QC Issues return mappings/gaps only. Running legacy job numbers are never adopted. The source inventory records original implementation, synthetic fixtures, external dependencies and the unchanged read-only legacy reference; no private source/history/data was copied.
+
+Evidence: **5 legacy tests passed**, read-only permissions plus before/after hashes; host full suite **218 passed, 23 explicit skips**; isolated Linux legacy/Issue/CLI tests **18 passed**. No real production snapshot or migration was performed.
