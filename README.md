@@ -4,8 +4,9 @@ A provider-neutral control plane for reproducible native quantum-chemistry jobs.
 v0.1 provides a local broker, durable workers, extensible engine/executor plugins,
 declaration-driven results, and optional GitHub, MCP and model-client adapters.
 
-**Local release candidate.** No public package/repository name is reserved by this
-checkout. Existing production deployments are outside this project and unchanged.
+**Public v0.1.0 release:** [download the audited distributions](https://github.com/binghuang2018/chat-hpc-control/releases/tag/v0.1.0).
+The release tag pins source commit `b2c0a59`; `main` also carries publication documentation.
+Existing production deployments are outside this project's migration scope.
 
 ## Start here
 
@@ -45,8 +46,9 @@ are separate. `data_ready` requires `COMPLETED + VERIFIED + COMPLETE`;
 fixtures do not establish scientific validity or every QC-version compatibility.
 
 See the evidence matrix for actual native, fixture, SDK, API and product coverage.
-No paid model calls, real external publication or production migration were used
-to prepare this local candidate.
+GitHub-hosted CI and public Release publication are recorded in
+[publication verification](docs/v0.1.0-publication.md). No paid model calls or
+production migration were used. The original build acceptance report remains unchanged.
 
 ## License and contributions
 

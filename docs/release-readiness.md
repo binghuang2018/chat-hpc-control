@@ -1,9 +1,10 @@
-# Local v0.1 release readiness
+# v0.1 release readiness
 
 The owner approved the architecture, all implementation plans and Native execution.
-Newly authored code and synthetic fixtures use **Apache-2.0**. This is a local
-candidate; external repository/package naming, public visibility and actual
-publication require a separate owner decision.
+Newly authored code and synthetic fixtures use **Apache-2.0**. The owner separately
+authorized a public GitHub repository and v0.1.0 Release on 2026-10-23. These are now
+published; [readback and CI evidence](v0.1.0-publication.md) records the result.
+PyPI/Marketplace publication and production deployment remain separate.
 
 ## Implemented scope
 
@@ -24,15 +25,19 @@ sdist, demo wheel, SHA256SUMS and a machine-readable release manifest. The manif
 records source commit, dirty status, package/protocol versions and captured evidence.
 An absent command/log/version/result cannot be converted to PASS.
 
-CI uses GitHub-hosted runners and full official Action commit references. It has
-not been run on GitHub for this candidate. The manual candidate workflow builds
+CI uses GitHub-hosted runners and full official Action commit references. The release
+commit passed all seven GitHub-hosted CI jobs, including both platform matrices.
+The manual candidate workflow builds
 and retains an Artifact only; it cannot publish to PyPI or alter a deployed site.
 
 ## Separate external gate
 
-Not performed: public remote creation, pushes, release tags, PyPI/Action publishing,
-real GitHub Issues/Artifacts, real model calls, commercial QC validation, production
-service installation, and node migration. No existing node was connected or modified.
+Completed for this request: public GitHub repository creation, code push, pinned
+v0.1.0 tag and Release with seven verified assets.
+
+Not performed: PyPI/Marketplace publication, application-level real GitHub QC
+Issues/Artifacts, real model calls, commercial QC validation, production service
+installation, and node migration. No existing node was connected or modified.
 
 A publishable control package does not certify arbitrary scientific inputs or
 physical conclusions. `data_ready` describes the declared numerical contract;

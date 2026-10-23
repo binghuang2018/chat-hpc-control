@@ -18,7 +18,8 @@ Use synthetic fixtures with redistribution rights. Never commit credentials,
 licensed programs or private research data. Do not change runtime or schema
 semantics silently. Record unexecuted compatibility checks explicitly.
 
-Public contribution hosting and reporting addresses will be set by the owner at
-publication; this local candidate intentionally contains no invented repository URL.
+Contribute through [the public repository](https://github.com/binghuang2018/chat-hpc-control).
+Report ordinary bugs or propose changes in [Issues](https://github.com/binghuang2018/chat-hpc-control/issues).
+For sensitive reports, follow SECURITY.md and omit credentials/private research data.
 
 Full evidence/build instructions: [validation guide](docs/validation-guide.md).

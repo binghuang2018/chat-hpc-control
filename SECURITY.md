@@ -1,6 +1,6 @@
 # Security and trust model
 
-Version 0.1 is a local candidate, without a public support or disclosure endpoint.
+Version 0.1.0 is public.
 Report issues privately to the site administrator/maintainer through an existing
 trusted channel. Do not include credentials or private scientific inputs.
 

@@ -1,6 +1,7 @@
 # chat-hpc-control
 
-面向社区的多模型原生量化计算控制框架，当前交付为 **v0.1 本地发行候选**。
+面向社区的多模型原生量化计算控制框架，已发布 **[v0.1.0](https://github.com/binghuang2018/chat-hpc-control/releases/tag/v0.1.0)**。
+Release 固定提交 `b2c0a59`，`main` 另含发布文档。
 现有生产站点不属于本项目的迁移范围，本次未改变其部署。
 
 - [中文 quickstart](docs/quickstart.zh-CN.md) / [English](docs/quickstart.md)
@@ -20,5 +21,6 @@ local/独立 Task Spooler 执行器；macOS 提供核心协议与客户端能力
 齐全时 `data_ready=true`；科学验收默认 `NOT_EVALUATED`。模型 SDK 可选，
 OpenAI/Anthropic/Gemini 的协议与 SDK 测试不能替代真实 API 或网页产品验收。
 
-本地候选包含代码、测试、示例、文档和发行产物；没有推送或实际发布，没有使用
-生产凭据或付费模型调用。新代码采用 Apache-2.0，商业程序及许可证由站点提供。
+公开仓库和 Release 包含代码、测试、示例、文档、发行产物与校验摘要，详见
+[发布核验记录](docs/v0.1.0-publication.md)。本次未连接或修改 n008，未执行付费模型调用或昂贵计算。
+新代码采用 Apache-2.0，商业程序及许可证由站点提供。

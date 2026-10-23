@@ -3,6 +3,8 @@
 需要 Linux x86_64、Python 3.11–3.13。演示不需要 QC 软件、API key、root、旧账号、
 runner 或 Task Spooler。请选择较短的新目录，避免 Unix socket 路径长度限制。
 
+从 [v0.1.0 Release](https://github.com/binghuang2018/chat-hpc-control/releases/tag/v0.1.0) 下载全部附件到本地 `dist/` 目录，使用 `SHA256SUMS` 核对摘要。演示使用其中两个匹配的 wheel；附件也包括源码包和验收报告。
+
 ```sh
 python3 -m venv /tmp/chc-venv
 /tmp/chc-venv/bin/python -m pip install ./dist/chat_hpc_control-0.1.0-py3-none-any.whl ./dist/chat_hpc_demo_engine-0.1.0-py3-none-any.whl

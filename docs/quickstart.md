@@ -6,6 +6,8 @@ path; the demo refuses a nonempty foreign directory.
 
 From the local release folder, install the two wheels in a fresh environment:
 
+Download the [v0.1.0 Release assets](https://github.com/binghuang2018/chat-hpc-control/releases/tag/v0.1.0) into a local `dist/` directory and verify them with `SHA256SUMS`. The demo uses the two matching wheels; the source archive and acceptance reports are also included.
+
 ```sh
 python3 -m venv /tmp/chc-venv
 /tmp/chc-venv/bin/python -m pip install ./dist/chat_hpc_control-0.1.0-py3-none-any.whl ./dist/chat_hpc_demo_engine-0.1.0-py3-none-any.whl
